@@ -1,0 +1,420 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{RNAither, an automated pipeline for the statistical analysis of high-throughput RNAi screens}
+%\VignettePackage{RNAither}
+
+\documentclass[11pt]{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{Sweave}
+
+\title{RNAither, an automated pipeline for the statistical analysis of high-throughput RNAi screens}
+\author{Nora Rieber}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%
+%Introduction%
+%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+RNAither performs analyses of human RNAi knock-out screens, from raw signal intensities to lists of significant genes and biological processes. There are no prerequisites about plate size, number of signal channels, or availability of control measurements. 
+\\
+\\
+An overview of the typical work-flow of the pipeline is given in fig.~\ref{pipelineworkflow}. All steps can be carried out and adapted independently by the user for maximum flexibility. However, to facilitate usage of the pipeline and speed up the analysis, we recommend the use of our wrapper function that performs a comprehensive analysis and presents the results as a set of HTML pages while still allowing to choose the analysis options - for example normalization methods or statistical tests - that are best suited for the type of data at hand in a concrete case.
+\\
+\begin{figure}
+     \centerline{\includegraphics[width=5cm,height=10.5cm]{workflow.png}}
+  \caption{The typical pipeline analysis work-flow. All steps are independent but the full work-flow from quality analysis to html output may be carried out by the {\tt mainAnalysis} wrapper function. HTML output is dependent on the wrapper function.}
+  \label{pipelineworkflow}
+\end{figure}
+
+Section~\ref{inputfile} (Generating an input dataset file for RNAither) and ~\ref{wrapFuncHTML} ({\tt mainAnalysis} wrapper function and HTML output) are relevant for any user wanting to use the automated version of the analysis. Sections~\ref{genfunc} through~\ref{GSEApart} describe the detail of the functions used by the {\tt mainAnalysis} wrapper function, and introduce some additional analysis functions not included in the wrapper, but are irrelevant for the standard use of the package.
+
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%Generate dataset%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+
+
+\section{Generating an input dataset file for RNAither}\label{inputfile}
+
+The input dataset for the pipeline is a text file generated from the experimental output data that contains all the information necessary to describe the experiment. The text file consists of a header and a table. The header gives information about the external experiment name ({\tt external\_experiment\_name}), e.g. ``"Johns Experiment Nb. 1"'', and the type of data ({\tt type\_of\_data}), e.g. ``364 well plate data for virus screens'', and allows a space for comments, if any (otherwise {\tt NA}). In the standard case, the table contains 13 columns, each line corresponding to one spot or well on one plate: 
+
+\begin{itemize}
+\item the spot number on the plate {\tt Spotnumber}
+\item the spot type {\tt SpotType}, which can be 0 (negative control), 1 (positive control), 2 (normal sample), or -1 (empty spot or spot of poor quality that will not be included in the further analysis)
+\item an internal gene ID ({\tt Internal\_GeneID}), for example the siRNA name. Can be equal to {\tt GeneName}.
+\item the gene name ({\tt GeneName})
+\item the signal intensity ({\tt SigIntensity})
+\item the standard deviation of the signal intensity ({\tt SDSIntensity})
+\item the background intensity value ({\tt Background})
+\item the plate number of the spot/well ({\tt LabtekNb})
+\item the row number of the spot/well ({\tt RowNb})
+\item the column number of the spot/well ({\tt ColNb})
+\item the experiment number ({\tt ScreenNb})
+\item the number of cells in the spot/well ({\tt NbCells}) - can also be a second intensity channel.
+\item the proportion of cells among the recognized objects ({\tt PercCells}) - useful when the experimental data is recorded automatically.
+\end{itemize}
+
+These columns are always present, but can be simply set to {\tt NA} if the information is not available. Appending additional columns is unproblematic, and further dataset processing and analysis is not confined to specific column names. During data analysis, results (e.g. normalized values, p-values or hit vectors) are appended as extra columns to the dataset.
+\\
+\\
+We implemented the possibility to make a distinction between {\tt GeneName} and {\tt Internal\_GeneID}. All pipeline functions that perform annotations or group signal values according to replicates leave the choice of a classification of replicates according to either the gene ({\tt GeneName}) or the siRNA ({\tt Internal\_GeneID}). This means that in case different siRNAs are used to silence the same gene, we can either treat all siRNAs as having the same effect on that gene (i.e. we consider two spots with, respectively, geneA silenced by siRNA1 and geneA silenced by siRNA2, as replicates), or treat them differently (i.e. we only consider two spots with a silenced geneA as replicates if siRNA1 was used for both; geneA silenced by siRNA1 and geneA silenced by siRNA2 are not considered as replicates in the analysis).
+\\
+\\
+Dataset files are usually generated with the function {\tt generateDatasetFile} as illustrated in the following example:
+
+<<setup1, results=hide>>=
+library("RNAither")
+@ 
+
+<<>>=
+#gene names
+plateLayout1 <- c("test1", "empty", "test3", "test4", "test5", 
+"test6", "test7", "empty", "test9", "test10", "test11", "test12")
+
+plateLayout2 <- c("test1", "test2", "test3", "test4", "test5", 
+"test6", "test7", "test8", "test9", "test10", "test11", "test12")
+
+plateLayout <- cbind(plateLayout1, plateLayout2)
+
+emptyWells <- list(c(2, 8), NA_integer_)
+#the first plate has two empty wells at position 2 and 8,
+#the second plate does not have any empty wells
+
+poorWells <- NA_integer_
+#no wells of poor quality
+
+controlCoordsOutput <- list(list(NA_integer_, NA_integer_), list(NA_integer_, c(9,10)))
+#the first plate does not have any control siRNAs,
+#the second plate has two negative controls at position 9 and 10
+
+backgroundValOutput<-NA_integer_
+#no background signal intensities available
+
+sigPlate1<-c(2578, NA_integer_, 3784, 3784, 2578, 5555, 5555, NA_integer_, 8154, 2578, 3784, 2578)
+sigPlate2<-c(8154, 3784, 5555, 3784, 11969, 2578, 1196, 5555, 17568, 2578, 5555, 2578)
+#the signal intensities on the plates
+
+meanSignalOutput<-list(sigPlate1, sigPlate2)
+
+SDmeansignal<-NA_integer_
+#no standard deviation available
+
+objnumOutput<-NA_integer_
+#no cell count available
+
+cellnumOutput<-NA_integer_
+
+generateDatasetFile("First test screen", "RNAi in virus-infected cells", 
+NA_character_, "testscreen_output.txt", plateLayout, plateLayout, 3, 4, 
+1, emptyWells, poorWells, controlCoordsOutput, backgroundValOutput, 
+meanSignalOutput, SDmeansignal, objnumOutput, cellnumOutput)
+
+#load the dataset into R:
+header<-readLines("testscreen_output.txt",3)
+dataset<-read.table("testscreen_output.txt", skip=3, colClasses=c(NA, 
+NA, NA, NA, "factor", NA, NA, NA, NA, NA, NA, NA, NA, NA), 
+stringsAsFactors=FALSE)
+@
+
+Datasets or dataset files from different experiments and/or plates can be joined with the functions {\tt joinDatasets} or {\tt joinDatasetFiles} for a combined analysis:
+
+<<>>=
+data(exampleDataset, package="RNAither")
+doubledataset <- joinDatasets(list(dataset, dataset))
+@
+
+or:
+
+<<>>=
+data(exampleHeader, package="RNAither")
+data(exampleDataset, package="RNAither")
+saveDataset(header, dataset, "save_testfile1.txt")
+
+header[[1]] <- "external_experiment_name,Test screen"
+header[[2]] <- "comments,contains twice Screen Nb. 1"
+
+joinDatasetFiles(list( "save_testfile1.txt", "save_testfile1.txt"), 3, header, "concatenated_testfile.txt")
+@
+
+
+%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+%General functions%
+%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+
+
+\section{General functions}\label{genfunc}
+
+The pipeline provides a set of functions for handling and restructuring the dataset and the contained values, serving the purpose of adapting the input data to user needs, if required. It can be inserted as an additional pre-processing step between the automated parsing of the experimental data and the data analysis, or be used after the analysis on a fully scored dataset containing normalized values, p-values and hits.
+
+\subsection{Creating subsets}
+
+The function {\tt createSubset} returns a subset of the given dataset containing all spots/lines of the main dataset that have a certain value in a specified column. For example, it allows to create subsets comprising only spots from a certain plate or experiment, spots containing a specific siRNA or positive/negative controls. The corresponding function {\tt indexSubset} returns the indexes of the concerned lines in the argument dataset.
+
+\subsection{Rearranging the dataset}
+
+The function {\tt orderGeneIDs} orders the given dataset according to a specified column (usually the signal intensity). {\tt eraseDataSetColumn} deletes the specified column.
+
+\subsection{Summarizing intensity values}
+
+There are many different ways of summarizing intensity values, e.g. those for one replicate. Besides the obvious {\tt mean} and {\tt median} functions already implemented in R, the pipeline offers the root mean square function ({\tt rms}):
+
+\[ RMS = \sqrt{ \frac{1}{n} \sum_{i=1}^n x_{i}^{2}} \]
+\noindent
+($x_{i}$, being the intensity values, $n$ their number), as well as a trimmed mean function ({\tt trim}) based on the R function that computes the mean after removing the upper and lower 5\% of the values, and the functions {\tt closestToZero} and {\tt furthestFromZero} returning, repectively, the value closest or furthest from zero. These functions can be set as arguments of the function {\tt summarizeReps} that returns a dataset with summarized values (either per siRNA or per gene).
+\\
+The function {\tt sumChannels} allows to generate an additional dataset column summarizing two columns of the dataset with a specified function (e.g. {\tt divideChannels}). For example, it is possible to divide the column containing the intensity values by the column containing the number of recognized cells.
+
+\subsection{Group replicate values}
+
+The function {\tt generateReplicateMat}, with the help of the function {\tt findReplicates}, generates a matrix containing either all values of a specific column or all indexes in the dataset for either each possible gene or each possible siRNA. Genes or siRNAs occurring only once in the dataset can be excluded from the matrix, if required. By default, wells with a SpotType set to -1 are ignored. However, it is possible to include those wells, as it may be desirable under certain circumstances.
+
+%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%
+%Quality control%
+%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%
+
+\section{Quality control}\label{qualcontr}
+
+The pipeline offers a wide range of possibilities to control the quality of the experiments to analyze. The functions can be used before or after normalization, to assess the quality of raw data or to monitor the effects of normalization.
+\\
+\\
+An easy way of verifying if an experiment was successful is to compare positive and negative controls. A straightforward way to do so is to compare control intensities with each other and with the remaining experimental data by eye. For this purpose, the functions {\tt makeBoxplotControls} which generates a boxplot with boxes for positive controls, negative controls and remaining data, and {\tt plotControlHisto} that shows a histogram of the data with highlighted controls have been implemented. (If controls are missing, {\tt plotHisto} is used to plot a histogram without highlighting.) All plots are available on screen, experiment and plate level. A numerical measure of the separation of positive and negative controls is given by the Z' factor which is computed by the function {\tt ZPRIMEQualControl} and defined as follows:
+
+\[ Z'=1-3\frac{\sigma_{pos}+\sigma_{neg}}{\mid\mu_{pos}-\mu_{neg}\mid} \]
+\noindent
+$Z'=1$ stands for an experiment with optimal separation of controls, $1>Z'\ge0.5$ for an experiment with excellent separation of controls, and $Z'<0.5$ for an experiment with limited quantitative information. The results are plotted and can also be found in an output table. The separation of control densities (on screen, experiment and plate level) can be checked with the plots generated with the function {\tt controlDensity}.
+\\
+\\
+However, positive and negative controls are not always available, or not available on the same plate, in which case experiment quality can also be assessed e.g. by generating a plate plot showing the color-coded spatial distribution of intensity values on the plates with the function {\tt spatialDistrib}. Obvious errors having occurred during the experiment become apparent, for example if certain areas (e.g. the edges of the plate) have strikingly high or low intensity values in comparison with the rest of the plate. {\tt spatialDistrib} uses the plotting function included in the Bioconductor package {\tt prada}. The spots are annotated with HTML mouseovers (using either the siRNA or the gene name) using the Bioconductor package {\tt geneplotter} and controls spots, if available, are marked.
+\\
+\\
+For further processing of the data, it may be important - e.g. if the significance of intensity values is to be assessed by the t-test - to know if it follows a normal distribution. This can be tested by generating a QQ-plot with the function {\tt plotQQ}. Detailed plots per experiment and per plate are available.
+\\
+\\
+Boxplots generated by the functions {\tt makeBoxplotPerScreen}, {\tt makeBoxplotPerPlate} and {\tt makeBoxplot4PlateType} allow a comparison of intensity channels between experiments or plates to evaluate reproducibility, while {\tt plotBar} or {\tt ZScorePlotTwo} shows the signal intensity of each well accompanied with the (screen, experiment or plate) median and one and two median absolute deviations. A direct comparison of channels with scatterplots ({\tt channelPlot}) including a lowess regression curve is also possible.
+\\
+\\
+After normalization, the variability of siRNA replicates in each experiment is compared directly through scatterplots (e.g. replicate 1 versus replicate 2) with the function {\tt compareReplicates}, but also with Spearman's rank correlation coefficient, both between experiments and between siRNA replicates ({\tt replicatesSpearmancor}). (A similar function not included in the {\tt mainAnalysis} wrapper function, {\tt compareReplicaPlates}, also allows to compare replicate plates pairwise.) As stated before, ``replicates'' can be defined by the user either on the gene or the siRNA level.
+\\
+\\
+A further way to assess the reproducibility of siRNA replicates is a measure borrowed from microarray analysis: the correlation of variation (CV) coefficient of an siRNA is defined as the standard deviation of its values divided by their mean:
+
+\[ CV = \frac{\sigma_{siRNA}}{\mu_{siRNA}} \]
+
+The function {\tt replicatesCV} plots the CV coefficient versus the mean intensity for each experiment.
+\\
+\\
+Besides, the standard deviation of each siRNA replicate is plotted in the same fashion as the plate plots generated by {\tt spatialDistrib} (see above) with the function {\tt compareReplicateSD}. This way, siRNA replicates and experiments bearing a disproportionate standard deviation are visible at a glance. Plots are available on screen and experiment level.
+\\
+\\
+Additional quality control functions are available that are not included in the {\tt mainAnalysis} wrapper function. For screens conducted with positive and negative controls on each plate, the dynamic range (called with the function {\tt DRQualControl}) is another measure to evaluate the separation of controls: 
+
+\[ DR=\frac{\mu_{neg}}{\mu_{pos}} \]
+\noindent
+$\mu$ being the mean of the positive and negative controls, respectively. If there is a background intensity available, there is also the possibility to compute the signal-to-noise ratio (SNR) with the function {\tt SNRQualControl} which will plot the distribution of SNR's per spot for the complete dataset and for each experiment and plate individually.
+\\
+\\
+If the data was read out with the help of an image recognition software on a cell-by-cell basis, the function {\tt numCellQualControl} allows to set upper and lower thresholds on the number of cells, as an intensity value per spot computed with too little or too many cells might not be meaningful. Accordingly, {\tt percCellQualControl} allows to set upper and lower thresholds on the percentage of objects identified as cells, because if very few objects were identified as cells, the intensity value computed is not meaningful either. The default threshold is 3 standard deviations from the mean and is shown in a histogram. The spot type of spots under or over the respective thresholds is set to -1, discarding them from the further analysis but still keeping them in the dataset file. Additionally, excluded siRNAs are saved to a separate text file.
+\\
+\\
+Wells or entire plates can also be discarded by hand by the user with the functions {\tt discardWells} or {\tt discardLabtek} if there is good cause for doing so, e.g. if experimental evidence suggests the measured values cannot be trusted. 
+
+
+
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+%Normalization%
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+
+\section{Normalization}\label{normalize}
+
+The dataset column containing the values to be normalized is saved as an additional column with the suffix ``.old'' (numbered if more than one normalization technique is applied) while the original column is replaced with the normalized values. The name of the methods applied appears in the header comments. As many normalization methods require the assumption that most siRNAs do not have any effect, it is possible to exclude the controls for the computation of normalized values.
+
+\subsection{Normalization on controls}
+
+The function {\tt controlNorm} allows to normalize values either on the experiment or plate median of either all positive or all negative controls, or to choose a specific control siRNA or gene to normalize values on.
+
+
+\subsection{Normalization on mean, median, etc}
+
+The function {\tt divNorm} accepts any kind of summarization function specified in R, e.g. the mean or median, and applies it either to experiments or to plates. Depending on requirements, the summarized value is subtracted from each value (e.g. in the case of log-values) or divides it.
+
+
+\subsection{Normalization with Z-scores}
+
+For each spot $i$, the Z-score is defined as:
+
+\[ Z=\frac{x_{i}-\overline{x}}{s_{x}} \]
+\noindent
+$x_{i}$ being the signal intensity for spot $i$, $\overline{x}$ the mean intensity value of the plate and $s_{x}$ the standard deviation. For the function {\tt ZScore}, these were replaced by the more robust alternatives of median and median absolute deviation. Also, a Z-score per screen (instead of per plate) is available. 
+
+
+\subsection{Normalization with B-scores}
+
+The B-score is implemented in the pipeline with the function {\tt BScore}. The procedure first calculates the so-called residual $r_{ijp}$ for row $i$ and column $j$ on plate $p$:
+
+\[ r_{ijp} = y_{ijp} - \hat{y}_{ijp} = y_{ijp} - ( \hat{\mu}_{p} + \hat{R}_{ip} + \hat{C}_{jp}) \]
+\noindent
+$y_{ijp}$ being the measured value, $\hat{y}_{ijp}$ the value fitted by a two-way median polish that estimates systematic measurement offsets for each row $i$ ($\hat{R}_{ip}$ being the median of row $i$) and column $j$ ($\hat{C}_{jp}$ being the median of column $j$). $\hat{\mu}_{p}$ is the estimated average of the plate.
+\\
+\\
+The B-score is then calculated with:
+
+\[ BScore = \frac{r_{ijp}}{MAD_{p}} \]
+\noindent
+MAD being the median absolute deviation defined as follows:
+
+\[ MAD_{p} = median\{| r_{ijp} - median(r_{ijp})|\} \]
+
+
+
+\subsection{Quantile normalization}
+
+Quantile normalization is implemented in the pipeline with the function {\tt quantileNormalization}, which uses the Bioconductor package {\tt limma}.
+\\
+\\
+Given $n$ plates or experiments with $p$ values, a matrix X with $p$ rows and $n$ columns is formed. Then each column of the matrix is sorted according to its values and each element of a row is replaced with the mean of the row. Finally, the elements of each column are sorted back into their initial order.
+
+
+\subsection{Li-Wong rank normalization}
+
+The Li-Wong rank normalization - also called invariant probe set normalization - has its origin in microarray pre-processing  and is implemented in the pipeline with the function {\tt LiWongRank}. The idea is that, given a ranked list of signal intensities, spots having the same or nearly the same rank on every replicate plate form the ``invariant probe set'' and are well-suited for normalization.
+\\
+\\
+Our pipeline uses a modified version of the technique since the original method was designed to deal with two-color microarrays, i.e. two linked data channels, which is not the case in siRNA experiments. 
+\\
+\\
+Our function is designed to normalize experiments, each with a certain number of plates $n$, that have been repeated several times. For each plate type in each experiment, the siRNAs are sorted according to their value on the plate. Only siRNAs used once on the plate are taken into account. (Again, it is possible to differ between siRNAs and genes.) It is obvious that plate designs where each siRNA is used several times are not suited for an invariant probe set normalization. An error is triggered if the plate layouts are not the same for each experiment, or if more than 20\% of the spots on one plate are occupied by siRNAs occuring several times on the plate.
+\\
+\\
+Subsequently, for each siRNA the standard deviation of its ranks is computed in order to select siRNAs with a very low standard deviation of ranks, i.e. having approximately the same rank on each replicate plate, to form the ``invariant probe set''.
+\\
+\\
+The function prints out a histogram of the standard deviations of ranks for each plate type and allows the user to select one out of a series of siRNAs with low standard deviations. For each plate, each spot value is divided by the value of the spot containing the chosen siRNA.
+
+\subsection{Lowess normalization}
+
+The Lowess normalization, or locally weighted polynomial regression, is used in the specific case of two data channels that are assumed to be independent of each other, e.g. one for a signal intensity, the other for the cell count per spot. Normally, the signal intensity should not be dependent on the cell count, however, plots of one channel versus the other show that sometimes this seems to be the case. 
+\\
+\\
+The Lowess normalization is a technique from microarray normalization that fits a smoothing curve through the points. The idea is to down-weigh data points. In our example, the normalization would down-weigh the signal intensity of data points which are more than a certain percentage away from the signal mean. The Lowess normalization is implemented in the pipeline with the function {\tt lowessNorm}.
+
+\subsection{Additional data processing}
+
+Some post-processing steps, for example certain statistical hypothesis tests, might require an additional normalization of the signal variance. Additionally, it has been shown on microarray data that signal variance increases with the signal. Variance normalization can be done by dividing values by the plate or experiment median absolute deviation with the function {\tt varAdjust}.
+\\
+\\
+The function {\tt subtractBackground} can be used to subtract signal background from each well, if applicable.
+\\
+\\
+The dataset can be saved to a text file with the function {\tt saveDataset}. However, this is not necessary when using the {\tt mainAnalysis} wrapper function.
+
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%stattests & hits%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+
+\section{Statistical tests and hit scoring}\label{stattesthits}
+
+Hits can be scored according to the t-test (function {\tt Ttest}), Mann-Whitney test (function {\tt MannWhitney}), and/or the Rank Product test (function {\tt RankProduct}). P-values can be corrected for multiple testing with {\tt multTestAdjust}.
+\\
+\\
+Each test function is applied to all values of each replicate (biological or technical) in a specified channel. A sorted, named vector of p-values can be saved to a text file with the function {\tt savepValVec}. P-values can be added as an extra column to the dataset with {\tt incorporatepValVec}.
+\\
+\\
+Subsequently, genes or siRNAs can be selected as hits with the function {\tt hitselectionPval}, {\tt hitselectionZscore}, or {\tt hitselectionZscorePval}. In the first case, all p-values under a user-defined threshold are chosen. The second case can be applied when the hit selection is performed directly on signal values (either per spot or per gene/siRNA), for example Z-scores, without the use of a statistical test. The user can choose if he wants the first or last $n$ values of a sorted list of signal values (a warning is issued if the length of the list is less than $2n$), or all values above or below a certain threshold. The function {\tt ZScorePlot} helps with the choice of the threshold by plotting the normalized signal values of all spots or replicates together with the mean and one and two standard deviations. The third case allows hit selection according to both a threshold for p-values and one for signal intensities. This can be useful when there are only few replicates available, and allows to exclude hits that are only scored because of the small standard deviation of the signal intensity values of the corresponding replicates.
+\\
+\\
+In all cases, a binary hit vector is generated and added as an extra column to the dataset. A warning is issued if no hits were identified according to the user-defined threshold, which is then changed in order to select at least one hit. A text file containing the identifiers, the corresponding p-values or in the second case the summarized signals, and all individual signals in the screen is generated. Calling the function {\tt spatialDistribHits} generates plate plots of the individual plates, showing spots identified as hits, which allows to identify suspicious distributions of hits on the plate (e.g. all in one column or one area of the plate).
+\\
+\\
+If a statistical test was performed, it is possible to generate a modified volcano plot (with the function {\tt volcanoPlot}), i.e. a plot of the normalized signal values versus the negative decadic logarithm of the corresponding p-value. A horizontal line is drawn at -$log_{10}$(p-value-threshold) to see hits at a glance.
+\\
+\\
+Finally, when different tests were performed, it is useful to compare the hits scored with different methods, which can be achieved with the functions {\tt vennDiag} and {\tt compareHits}. Venn diagrams show the number of overlaps from up to three different scoring methods while the hit comparison function saves a list of hit genes or siRNAs that were common to two scoring methods to a text file. These functions also make it possible to compare hits from two datasets screened under different conditions, provided the siRNAs used are the same. Hits can be ordered according to their IDs with the function {\tt orderGeneIDs} cited in~\ref{genfunc} and then a Venn diagram can be plotted.
+
+
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+%GSEA analysis%
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+
+\section{Gene Set Enrichment Analysis}\label{GSEApart}
+
+The main part of the pathway analysis, i.e. searching for overrepresented pathways among the hits, is done with the Bioconductor package {\tt topGO}. The function first annotates each gene name with its corresponding human GO identifiers with the Bioconductor package {\tt biomaRt}.
+\\
+\\
+The actual pathway analysis is done with the function {\tt gseaAnalysis} which calls the functions of the {\tt topGO} package. It uses the hit vector generated as described in~\ref{stattesthits} and leaves the choice of one of the three GO ontologies - biological process, molecular function and cellular component. {\tt topGO} uses an algorithm that accounts for the hierarchical structure of the GO database by filtering out local dependencies that lead to redundancy.
+\\
+\\
+The analysis results are summarized in a table including the top GO terms identified by the algorithm, their IDs, the corresponding p-value, and the number of genes in the analysis annotated with this GO term compared to the number of significant genes annotated with this GO term.
+
+
+%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+%wrapper func/html%
+%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+
+\section{{\tt mainAnalysis} wrapper function and HTML output}\label{wrapFuncHTML}
+
+While the user is at liberty to use and assemble all available pipeline functions as he sees fit, a wrapper function that implements a typical work flow and presents the analysis results in a set of HTML pages is on hand. The specification of:
+
+\begin{itemize}
+\item the header and dataset
+\item one or several normalizations to perform, along with the normalization functions' arguments (e.g. specification of channel, annotation, etc.)
+\item one or several statistical tests to apply to the normalized data, along with the test functions' arguments (e.g. specification of channel, annotation, etc.)
+\item a correction for multiple testing (can be ``none'')
+\item which type(s) of hit scoring to use (e.g. according to p-value and/or Z-score)
+\item which threshold(s) to use for hit scoring
+\item whether controls are available or not
+\item the names of the signal channels in the dataset file
+\item the GO hierarchy to choose for the GSEA analysis ({\tt biological\_process}, {\tt molecular\_function} or {\tt cellular\_component})
+\end{itemize}
+
+allows the {\tt mainAnalysis} function to perform a comprehensive analysis of the data as follows: First, the quality of the raw data is assessed with the functions described in~\ref{qualcontr}. The results are displayed as an overview on the HTML page {\tt index.html}. More detailed plots (i.e. on single experiment or single plate level) are available by clicking on the overview plots.
+\\
+\\
+The {\tt mainAnalysis} wrapper function then carries out all normalizations specified by the user. After each normalization, another quality check analogous to the first one is conducted and siRNA replicates compared (as described in~\ref{qualcontr}) on the HTML pages {\tt indexnorm.html}. Then, statistical hypothesis tests are performed and hits scored as specified by the user. Finally, a gene set enrichment analysis (GSEA) searches for overrepresented biological processes among the hits. Results of the analysis and plots showing the overlap between different testing and scoring methods, if applicable, are shown on the HTML page {\tt stats.html}, as well as a link to the text file containing the fully scored dataset, and a link to the GSEA analysis output table.
+\\
+\\
+The following example analyses a dataset as follows: the signal intensities in the column {\tt SigIntensity} are normalized on the experiment median of the negative controls. Hits are scored with the t-test and the Mann-Whitney test. Both tests are carried out twice, once for significantly low intensity values, once for significantly high intensity values (both compared to the intensity median 1). There is no correction for multiple testing. The p-value threshold chosen is 0.05. We specify two data channels, "SigIntensity" and "NbCells". GSEA analyses are carried out for each scoring method, based on the "biological process" branch of Gene Ontology.
+\\
+\\
+{\tt data(exampleHeader, package="RNAither")
+\\
+data(exampleDataset, package="RNAither")
+}
+\\
+\\
+The wrapper function should then be called as follows:
+\\
+\\
+{\tt mainAnalysis(header, dataset, 0, list(controlNorm), list(list(1, 0, "SigIntensity", 1)), 
+list(Ttest, MannWhitney, Ttest, MannWhitney), list(list("l", 1, "SigIntensity", "GeneName"), 
+list("l", 1, "SigIntensity", "GeneName"), list("g", 1, "SigIntensity", "GeneName"), 
+list("g", 1, "SigIntensity", "GeneName")), "none", c(1, 0, 0), c(0.05, 0, 0), 1, 1, 
+c("SigIntensity", "NbCells"), "biological\_process")}
+
+\end{document}
+
+
