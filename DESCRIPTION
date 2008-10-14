@@ -1,7 +1,6 @@
 Package: RNAither
 Title: Statistical analysis of high-throughput RNAi screens
-Version: 1.0.4
-Date: 2008-07-20
+Version: 1.0.5
 Author: Nora Rieber and Lars Kaderali
 Maintainer: Nora Rieber <RieberNor@gmx.de>
 Depends: R (>= 2.7.0), topGO, RankProd, prada

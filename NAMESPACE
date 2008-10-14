@@ -9,7 +9,6 @@ importFrom("geneplotter", "imageMap")
 importFrom("biomaRt", "useMart")
 importFrom("biomaRt", "useDataset")
 importFrom("biomaRt", "getBM")
-importFrom("biomaRt", "findHTTPHeaderEncoding")
 
 export("createSubset",
 	"indexSubset",
@@ -91,6 +90,5 @@ export("createSubset",
 	"volcanoPlot",
 	"vennDiag",
 	"compareHits",
-	"mainAnalysis",
-	"findHTTPHeaderEncoding"
+	"mainAnalysis"
 	)
