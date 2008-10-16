@@ -3344,12 +3344,6 @@ showPlot){
                         main=paste(plotTitle, "plate", i, "Exp.", j, sep=" "), 
                         col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
                     
-                        if (ColNo == 12 & RowNo == 8){
-                        ##plotPlate function coordinates are wrong for these parameters...
-                            dings$coord[, 2]<-dings$coord[, 2]-100
-                            dings$coord[, 4]<-dings$coord[, 4]-100
-                        }
-
                         png(paste(basicPlotName, "Exp", j, "Plate", i, "4html.png", sep="_"), width=300, height=300)
                             plotPlate((as.numeric(t(subsubset[[get("col4plot")]]))), ncol=ColNo, 
                             nrow=RowNo, char=posNegLabelVec, cex.char=0.8, 
