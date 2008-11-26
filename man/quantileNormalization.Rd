@@ -14,9 +14,9 @@ quantileNormalization(header, dataset, listOfArgs)
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
   \item{listOfArgs}{ a list containing: 
 
-- 1 or 2, 1 meaning a normalization per experiment, 2 meaning a normalization per plate
+- a character string specifying the column whose values will be used for normalization
 
-- a character string specifying the column whose values will be used for normalization }
+- 1 or 2, 1 meaning a normalization per experiment, 2 meaning a normalization per plate }
 }
 
 \value{

@@ -1,6 +1,6 @@
 \name{RankProduct}
 \alias{RankProduct}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Perform a Rank Product test }
 \description{
   Performs the non-parametric rank product test on the intensity data.
@@ -8,7 +8,7 @@
 \usage{
 RankProduct(dataset, listofargs)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
   \item{listofargs}{ a list containing: 

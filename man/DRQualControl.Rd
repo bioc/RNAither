@@ -1,20 +1,21 @@
 \name{DRQualControl}
 \alias{DRQualControl}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Computing the dynamic range }
 \description{
   Computes the dynamic range per plate for a complete dataset file and plots the results.
 }
 \usage{
-DRQualControl(header, data, nbLinesHeader, channel, plotTitle)
+DRQualControl(header, data, nbLinesHeader, channel, plotTitle, showPlot)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{data}{ an R data frame generated with \code{\link{generateDatasetFile}} }
   \item{nbLinesHeader}{ typically 3 }
   \item{channel}{ A character string specifying the name of the column containing the values for computing the dynamic range, e.g. \code{ "SigIntensity"} }
   \item{plotTitle}{ the plot title }
+  \item{showPlot}{ 0 or 1. 1 will open one or several plot windows in the R GUI, 0 will only save the plot(s) without opening windows }
 }
 
 \value{
@@ -29,7 +30,7 @@ Shows a plot of the dynamic range values and saves it as a pdf file under the ex
 data(exampleHeader, package="RNAither")
 data(exampleDataset, package="RNAither")
 
-DRQualControl(header, dataset, 3, "SigIntensity", "DR per plate")
+DRQualControl(header, dataset, 3, "SigIntensity", "DR per plate", 1)
 }
 
 \keyword{ device }

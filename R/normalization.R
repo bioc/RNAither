@@ -527,7 +527,7 @@ BScore <- function(header, dataset, listOfArgs){
                     c3<-max(subsubset$ColNb)
                     medPolishMatrix<-matrix(c1, c2, c3, byrow=T)
 
-                    fitResults<-medpolish(medPolishMatrix, maxiter=100, na.rm=TRUE)
+                    fitResults<-medpolish(medPolishMatrix, maxiter=100, trace.iter=FALSE, na.rm=TRUE)
                     BscoreMat<-fitResults$residuals/mad(fitResults$residuals, na.rm=TRUE)
                     
                     if (excludeControlsFlag == 1){
@@ -684,6 +684,11 @@ lowessNorm<-function(header, dataset, listOfArgs){
 
     col4ch1<-listOfArgs[[1]]
     col4ch2<-listOfArgs[[2]]
+    if (length(listOfArgs)>2){
+    	smSpan<-listOfArgs[[3]]
+    }else{
+        smSpan<-(2/3)
+    }
 
     dataset<-saveOldIntensityColumns(dataset, col4ch1)
     dataset<-saveOldIntensityColumns(dataset, col4ch2)  
@@ -716,7 +721,7 @@ lowessNorm<-function(header, dataset, listOfArgs){
                     if (sum(use)!=0){
                         s<-sort.int(ch1[use], index.return=T)
                         s2<-sort.int(s$ix, index.return=T)
-                        z<-lowess(ch1[use], ch2[use])
+                        z<-lowess(ch1[use], ch2[use], f=smSpan)
                         ch2Lowess<-ch2[use]-z$y[s2$ix]
                         retY[use]<-ch2Lowess
                     }
@@ -879,7 +884,7 @@ controlNorm<-function(header,dataset,listOfArgs){
 saveDataset<-function(header, data, dataSetFile){
 
     write.table(header, file=dataSetFile, quote=F, col.names=F, row.names=F)
-    write.table(data, file=dataSetFile, sep="\t", quote=F, col.names=T, append=T)
+    suppressWarnings({write.table(data, file=dataSetFile, sep="\t", quote=F, col.names=T, append=T)})
 
 }
 

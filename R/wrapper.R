@@ -14,7 +14,7 @@ hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
     ##########QUALITY PLOTS##########
     #################################
     
-    print("Computing quality plots on raw data...")
+    print(paste("Computing quality plots on raw data...", date(), sep=": "))
     
     ##MAINPAGE titles:
     write.table(paste("<HTML><HEAD><TITLE>", secondLineBis, ", ", firstLineBis, 
@@ -96,13 +96,26 @@ hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
     ##########NORMALIZATION#########
     ################################
     
-    print("Normalizing data...")
+    print(paste("Normalizing data...", date(), sep=": "))
     
     for (i in 1:length(listOfNormalizations)){
     
         result<-listOfNormalizations[[i]](header, dataset, listOfArgs4norm[[i]])
         header<-result[[1]]
-        dataset<-result[[2]]    
+        dataset<-result[[2]]
+        
+        ##change Inf and -Inf values that potentially arise during normalization to NA
+        ##it is IMPORTANT for this that the argument order for normalization functions stays the same!
+        col4plot<-listOfArgs4norm[[i]][[1]][1]
+        if(length(which(dataset[[get("col4plot")]]==Inf))>0){
+            places<-which(dataset[[get("col4plot")]]==Inf)
+            dataset[[get("col4plot")]][places]=NA
+        }
+                        
+        if(length(which(dataset[[get("col4plot")]]==-Inf))>0){
+	    places<-which(dataset[[get("col4plot")]]==-Inf)
+	    dataset[[get("col4plot")]][places]=NA
+        }
     
         saveDataset(header, dataset, paste(firstLineBis, "_Fulldataset.txt", sep=""))
     
@@ -223,7 +236,7 @@ hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
     ##########STAT TESTS##########
     ##############################
     
-    print("Performing statistical tests...")
+    print(paste("Performing statistical tests...", date(), sep=": "))
     
     ##MAINPAGE titles:
     write.table(paste("<HTML><HEAD><TITLE>Statistical analysis report, ", 
@@ -673,7 +686,7 @@ hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
         sep=""), file="stats.html", append=T, quote=F, row.names=F, col.names=F)
         
         s2<-"<CENTER><TABLE border=0><TR><TH BGCOLOR=\"#d0d0f0\">Gene name</TH>"
-        s3<-"<TH BGCOLOR=\"#e0e0ff\">ZScore (rms)</TH>"
+        s3<-"<TH BGCOLOR=\"#e0e0ff\">ZScore (median)</TH>"
         s4<-paste(s2, s3, sep="")
         write.table(s4, file="stats.html", append=T, quote=F, row.names=F, col.names=F)
         
@@ -756,7 +769,7 @@ hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
         file="stats.html", append=T, quote=F, row.names=F, col.names=F)
         
         s6<-"<CENTER><TABLE border=0><TR><TH BGCOLOR=\"#d0d0f0\">Gene name</TH>"
-        s7<-"<TH BGCOLOR=\"#e0e0ff\">ZScore (rms)</TH>"
+        s7<-"<TH BGCOLOR=\"#e0e0ff\">ZScore (median)</TH>"
         s8<-paste(s6, s7, sep="")
         write.table(s8, file="stats.html", append=T, quote=F, row.names=F, col.names=F)
         
@@ -965,8 +978,9 @@ hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
     
     s1<-"Analysis finished. Quality analysis of raw data can be found in index.html"
     s2<-", quality analysis of normalized data can be found in indexnorm.html. "
-    s3<-"Statistical analysis can be found in stats.html."
-    print(paste(s1, s2, s3, sep=""))
+    s3<-"Statistical analysis can be found in stats.html. "
+    s4<-date()
+    print(paste(s1, s2, s3, s4, sep=""))
 
 }
 
@@ -1812,10 +1826,10 @@ secondLineBis, indexOutput, subPage, flag){
 
             if (flag == 0){
                 zeugs<-controlDensity(header, dataset, vecOfChannels[i], 
-                paste("Control density (", i, ")", sep=""), 0)
+                paste("Control density (", i, ")", sep=""), 0, 1)
             }else{
                 zeugs<-controlDensity(header, dataset, vecOfChannels[i], 
-                paste("norm. Control density (", flag, ")  (", i, ")", sep=""), 0)
+                paste("norm. Control density (", flag, ")  (", i, ")", sep=""), 0, 1)
             }
 
             write.table(paste("<TD BGCOLOR=\"#f0f0ff\"><CENTER><A HREF=\"", subPage, 
@@ -1847,10 +1861,10 @@ secondLineBis, indexOutput, subPage, flag){
         for (i in 1:length(vecOfChannels)){
             if (flag == 0){
                 zeugs<-controlDensity(header, dataset, vecOfChannels[i], 
-                paste("Control density (", i, ")", sep=""), 0)
+                paste("Control density (", i, ")", sep=""), 0, 1)
             }else{
                 zeugs<-controlDensity(header, dataset, vecOfChannels[i], 
-                paste("norm. Control density (", flag, ")  (", i, ")", sep=""), 0)
+                paste("norm. Control density (", flag, ")  (", i, ")", sep=""), 0, 1)
             }
             write.table(paste("<TD BGCOLOR=\"#f0f0ff\"><CENTER><A HREF=\"", zeugs, 
             ".pdf\"><IMG SRC=\"", zeugs, ".png\"/></A></CENTER><BR></TD>", sep=""), 
@@ -1864,10 +1878,10 @@ secondLineBis, indexOutput, subPage, flag){
 
             if (flag == 0){
                 stuff<-controlDensityPerScreen(header, dataset, vecOfChannels[i], 
-                paste("Control density (", i, ")", sep=""), 0)
+                paste("Control density (", i, ")", sep=""), 0, 1)
             }else{
                 stuff<-controlDensityPerScreen(header, dataset, vecOfChannels[i], 
-                paste("norm. Control density (", flag, ") (", i, ")", sep=""), 0)
+                paste("norm. Control density (", flag, ") (", i, ")", sep=""), 0, 1)
             }
 
 
@@ -1925,10 +1939,10 @@ secondLineBis, indexOutput, subPage, flag){
             for (j in 1:length(vecOfChannels)){
                 if (flag == 0){
                     zeugs<-controlDensityPerScreen(header, dataset, vecOfChannels[j], 
-                    paste("Control density (", j, ")", sep=""), 0)
+                    paste("Control density (", j, ")", sep=""), 0, 1)
                 }else{
                     zeugs<-controlDensityPerScreen(header, dataset, vecOfChannels[j], 
-                    paste("norm. Control density (", flag, ") (", j, ")", sep=""), 0)
+                    paste("norm. Control density (", flag, ") (", j, ")", sep=""), 0, 1)
                 }
 
                 write.table(paste("<TD BGCOLOR=\"#f0f0ff\"><CENTER><A HREF=\"", zeugs[[1]], 
@@ -1943,10 +1957,10 @@ secondLineBis, indexOutput, subPage, flag){
 
                 if (flag == 0){
                     stuff2<-controlDensityPerPlate(header, dataset, vecOfChannels[o], 
-                    paste("Control density (", o, ")", sep=""), 2, 0)
+                    paste("Control density (", o, ")", sep=""), 2, 0, 1)
                 }else{
                     stuff2<-controlDensityPerPlate(header, dataset, vecOfChannels[o], 
-                    paste("norm. Control density (, ", flag, ") (", o, ")", sep=""), 2, 0)
+                    paste("norm. Control density (, ", flag, ") (", o, ")", sep=""), 2, 0, 1)
                 }
 
                 write.table(paste("<BR><BR><CENTER><TABLE border=0><TR>", sep=""), 

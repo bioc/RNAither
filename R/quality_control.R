@@ -24,7 +24,7 @@ discardWells<-function(data, screenNr, labtekNr, vecPositions){
 
 
 channelPlot <- function(header, dataset, vecOfChannels, flag, plotTitle,
-showPlot){
+showPlot, smSpan=2/3){
 
   dataset<-dataset[which(dataset$SpotType!=-1), ]
 
@@ -51,16 +51,16 @@ showPlot){
                 if(interactive()){
                     x11()
                     plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                    lines(lowess(x, y), col="red")
+                    lines(lowess(x, y, f=smSpan), col="red")
                 }
             }
             pdf(paste(plotName, "(", combiCounter, ").pdf", sep=""))
                 plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                lines(lowess(x, y), col="red")
+                lines(lowess(x, y, f=smSpan), col="red")
             dev.off()
             png(paste(plotName, "(", combiCounter, ").png", sep=""), width=300, height=300)
                 plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                lines(lowess(x, y), col="red")
+                lines(lowess(x, y, f=smSpan), col="red")
             dev.off()
         }
     }
@@ -98,17 +98,17 @@ showPlot){
                         if(interactive()){
                             x11()
                             plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                            lines(lowess(x, y), col="red")
+                            lines(lowess(x, y, f=smSpan), col="red")
                         }
                     }
                     pdf(paste(plotName, "(", combiCounter, ") (Exp. ", i, ").pdf", sep=""))
                         plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                        lines(lowess(x, y), col="red")
+                        lines(lowess(x, y, f=smSpan), col="red")
                     dev.off()
                     png(paste(plotName, "(", combiCounter, ") (Exp. ", i, ").png", sep=""), 
                     width=300, height=300)
                         plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                        lines(lowess(x, y), col="red")
+                        lines(lowess(x, y, f=smSpan), col="red")
                     dev.off()
                 }
             }
@@ -156,18 +156,18 @@ showPlot){
                                 if(interactive()){
                                     x11()
                                     plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                                    lines(lowess(x, y), col="red")
+                                    lines(lowess(x, y, f=smSpan), col="red")
                                 }
                             }
                             pdf(paste(plotName, "(", combiCounter, ")_Exp_", j, "_Plate_", i, "_.pdf", 
                             sep=""))
                                 plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                                lines(lowess(x, y), col="red")
+                                lines(lowess(x, y, f=smSpan), col="red")
                             dev.off()
                             png(paste(plotName, "(", combiCounter, ")_Exp_", j, "_Plate_", i, "_.png", 
                             sep=""), width=300, height=300)
                                 plot(x, y, main=tt, xlab="Ch1", ylab="Ch2", cex.main=0.7)
-                                lines(lowess(x, y), col="red")
+                                lines(lowess(x, y, f=smSpan), col="red")
                             dev.off()
                         }
                     }
@@ -477,82 +477,102 @@ plotTitle, showPlot){
             
                 subset<-dataset[which(dataset$ScreenNb == i), ]
                 currData<-subset[[get("col4plot")]]
-
-                yy<-ylabCompute(subset, col4plot, flag2)
-                yymin<-yy[[1]]
-                yymax<-yy[[2]]
                 
-                if (flag2 == 0){
+                if(sum(!is.na(currData))>0){
+                
+                    yy<-ylabCompute(subset, col4plot, flag2)
+                    yymin<-yy[[1]]
+                    yymax<-yy[[2]]
+                
+                    if (flag2 == 0){
                     
-                    sd2a<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
-		    sd2b<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
-		    sd1a<-mean(currData, na.rm=T)+sd(currData, na.rm=T)
-                    sd1b<-mean(currData, na.rm=T)-sd(currData, na.rm=T)
-                }
-                if (flag2 == 1){
+                        sd2a<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
+       	                sd2b<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
+                        sd1a<-mean(currData, na.rm=T)+sd(currData, na.rm=T)
+                        sd1b<-mean(currData, na.rm=T)-sd(currData, na.rm=T)
+                    }
+                    if (flag2 == 1){
                     
-                    sd2a<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
-		    sd2b<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
-		    sd1a<-median(currData, na.rm=T)+mad(currData, na.rm=T)
-		    sd1b<-median(currData, na.rm=T)-mad(currData, na.rm=T)
-		}
+                        sd2a<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
+                        sd2b<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
+                        sd1a<-median(currData, na.rm=T)+mad(currData, na.rm=T)
+                        sd1b<-median(currData, na.rm=T)-mad(currData, na.rm=T)
+                    }
                 
             
-                if (showPlot == 1){
-                    if(interactive()){
-                        plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
-                        main=plotTitle, cex.main=0.8)
+                    if (showPlot == 1){
+                        if(interactive()){
+                            plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
+                            main=plotTitle, cex.main=0.8)
                     
-                        if (flag2 == 0){                        
-                            abline(mean(currData, na.rm=T),0,col="blue")
-                        }
+                            if (flag2 == 0){                        
+                                abline(mean(currData, na.rm=T),0,col="blue")
+                            }
         
-                        if (flag2 == 1){
-                            abline(median(currData, na.rm=T),0,col="blue")
-                        }
+                            if (flag2 == 1){
+                                abline(median(currData, na.rm=T),0,col="blue")
+                            }
                     
-                        abline(sd2a,0,col="red")
-                        abline(sd2b,0,col="red")
-                        abline(sd1a,0,col="green")
-                        abline(sd1b,0,col="green")
-                        identify(subset[[get("col4plot")]], labels=subset[[get("col4anno")]])
+                            abline(sd2a,0,col="red")
+                            abline(sd2b,0,col="red")
+                            abline(sd1a,0,col="green")
+                            abline(sd1b,0,col="green")
+                            identify(subset[[get("col4plot")]], labels=subset[[get("col4anno")]])
+                        }
                     }
+                }else{
+                    plot.new()
+                    text(0.5, 0.75, paste("Cannot generate plot for exp ", i, sep=""))
+		    text(0.5, 0.25, "- only NAs available")
                 }
                 
                 headerTemp<-strsplit(header[1], ", ")
                 plotName<-paste(headerTemp[[1]][2], plotTitle, sep="_")
                 
-                pdf(paste(plotName, "(Exp. ", i, ").pdf", sep=""))
-                    plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
-                    main=plotTitle, cex.main=0.8)
+                if(sum(!is.na(currData))>0){
+                    pdf(paste(plotName, "(Exp. ", i, ").pdf", sep=""))
+                        plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
+                        main=plotTitle, cex.main=0.8)
                     
-                    if (flag2 == 0){
-                        abline(mean(currData, na.rm=T),0,col="blue")
-                    }
-                    if (flag2 == 1){
-                        abline(median(currData, na.rm=T),0,col="blue")
-                    }
-                    abline(sd2a,0,col="red")
-		    abline(sd2b,0,col="red")
-		    abline(sd1a,0,col="green")
-                    abline(sd1b,0,col="green")
-                dev.off()
+                        if (flag2 == 0){
+                            abline(mean(currData, na.rm=T),0,col="blue")
+                        }
+                        if (flag2 == 1){
+                            abline(median(currData, na.rm=T),0,col="blue")
+                        }
+                        abline(sd2a,0,col="red")
+		        abline(sd2b,0,col="red")
+		        abline(sd1a,0,col="green")
+                        abline(sd1b,0,col="green")
+                    dev.off()
                 
-                png(paste(plotName, "(Exp. ", i, ").png", sep=""), width=300, height=300)
-                    plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
-                    main=plotTitle, cex.main=0.8)
+                    png(paste(plotName, "(Exp. ", i, ").png", sep=""), width=300, height=300)
+                        plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
+                        main=plotTitle, cex.main=0.8)
                     
-                    if (flag2 == 0){
-                        abline(mean(currData, na.rm=T),0,col="blue")
-                    }
-                    if (flag2 == 1){
-                        abline(median(currData, na.rm=T),0,col="blue")
-                    }
-                    abline(sd2a,0,col="red")
-		    abline(sd2b,0,col="red")
-		    abline(sd1a,0,col="green")
-                    abline(sd1b,0,col="green")
-                dev.off()
+                        if (flag2 == 0){
+                            abline(mean(currData, na.rm=T),0,col="blue")
+                        }
+                        if (flag2 == 1){
+                            abline(median(currData, na.rm=T),0,col="blue")
+                        }
+                        abline(sd2a,0,col="red")
+		        abline(sd2b,0,col="red")
+		        abline(sd1a,0,col="green")
+                        abline(sd1b,0,col="green")
+                    dev.off()
+                }else{
+                    pdf(paste(plotName, "(Exp. ", i, ").pdf", sep=""))
+                        plot.new()
+                        text(0.5, 0.75, paste("Cannot generate plot for exp ", i, sep=""))
+		        text(0.5, 0.25, "- only NAs available")
+                    dev.off()
+                    png(paste(plotName, "(Exp. ", i, ").png", sep=""), width=300, height=300)
+                        plot.new()
+                        text(0.5, 0.75, paste("Cannot generate plot for exp ", i, sep=""))
+		        text(0.5, 0.25, "- only NAs available")
+                    dev.off()
+                }
             }
         }
         return(list(plotName, minOfScreens, numOfScreens))
@@ -580,80 +600,104 @@ plotTitle, showPlot){
                         subsubset<-subset[which(subset$LabtekNb == i), ]
                         currData<-subsubset[[get("col4plot")]]
 
-                        yy<-ylabCompute(subsubset, col4plot, flag2)
-                        yymin<-yy[[1]]
-                        yymax<-yy[[2]]
+                        if(sum(!is.na(currData))>0){
+
+                            yy<-ylabCompute(subsubset, col4plot, flag2)
+                            yymin<-yy[[1]]
+                            yymax<-yy[[2]]
                         
-                        if (flag2 == 0){
-                            sd2a<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
-		            sd2b<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
-		            sd1a<-mean(currData, na.rm=T)+sd(currData, na.rm=T)
-                            sd1b<-mean(currData, na.rm=T)-sd(currData, na.rm=T)
-                        }
-                        if (flag2 == 1){
-                            sd2a<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
- 		            sd2b<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
- 		            sd1a<-median(currData, na.rm=T)+mad(currData, na.rm=T)
- 		            sd1b<-median(currData, na.rm=T)-mad(currData, na.rm=T)
- 		        }
+                            if (flag2 == 0){
+                                sd2a<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
+		                sd2b<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
+		                sd1a<-mean(currData, na.rm=T)+sd(currData, na.rm=T)
+                                sd1b<-mean(currData, na.rm=T)-sd(currData, na.rm=T)
+                            }
+                            if (flag2 == 1){
+                                sd2a<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
+ 		                sd2b<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
+ 		                sd1a<-median(currData, na.rm=T)+mad(currData, na.rm=T)
+ 		                sd1b<-median(currData, na.rm=T)-mad(currData, na.rm=T)
+ 		            }
                     
-                        if (showPlot == 1){
-                            if(interactive()){
+                            if (showPlot == 1){
+                                if(interactive()){
+                                    plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
+                                    main=plotTitle, cex.main=0.8)
+                            
+                                    if (flag2 == 0){
+                                        abline(mean(currData, na.rm=T),0,col="blue")
+                                    }
+                
+                                    if (flag2 == 1){
+                                        abline(median(currData, na.rm=T),0,col="blue")
+                                    }
+                                    abline(sd2a,0,col="red")
+	        	            abline(sd2b,0,col="red")
+        		            abline(sd1a,0,col="green")
+                                    abline(sd1b,0,col="green")
+                                    identify(subsubset[[get("col4plot")]], labels=subsubset[[get("col4anno")]])
+                                }
+                            }
+                        }else{
+                            plot.new()
+                            text(0.5, 0.75, "Cannot generate plot for")
+                            text(0.5, 0.25, paste("plate ", i, " in exp ", j, sep=""))
+                            text(0.5, 0.05, "- only NAs available")
+                        }
+                        
+                        headerTemp<-strsplit(header[1], ", ")
+                        plotName<-paste(headerTemp[[1]][2], plotTitle, sep="_")
+                        
+                        if(sum(!is.na(currData))>0){
+                            pdf(paste(plotName, "Exp", j, "Plate", i, ".pdf", sep="_"))
+
                                 plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
                                 main=plotTitle, cex.main=0.8)
                             
                                 if (flag2 == 0){
                                     abline(mean(currData, na.rm=T),0,col="blue")
                                 }
-                
                                 if (flag2 == 1){
                                     abline(median(currData, na.rm=T),0,col="blue")
                                 }
                                 abline(sd2a,0,col="red")
-	        	        abline(sd2b,0,col="red")
-        		        abline(sd1a,0,col="green")
+		                abline(sd2b,0,col="red")
+    		                abline(sd1a,0,col="green")
                                 abline(sd1b,0,col="green")
-                                identify(subsubset[[get("col4plot")]], labels=subsubset[[get("col4anno")]])
-                            }
+                            dev.off()
+                        
+                            png(paste(plotName, "Exp", j, "Plate", i, ".png", sep="_"), 
+                            width=300, height=300)
+                        
+                                plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
+                                main=plotTitle, cex.main=0.8)
+                            
+                                if (flag2 == 0){
+                                    abline(mean(currData, na.rm=T),0,col="blue")
+                                }
+                                if (flag2 == 1){
+                                    abline(median(currData, na.rm=T),0,col="blue")
+                                }
+                                abline(sd2a,0,col="red")
+		                abline(sd2b,0,col="red")
+    		                abline(sd1a,0,col="green")
+                                abline(sd1b,0,col="green")
+                            dev.off()
+                        }else{
+                            pdf(paste(plotName, "Exp", j, "Plate", i, ".pdf", sep="_"))
+                                plot.new()
+                                text(0.5, 0.75, "Cannot generate plot for")
+                                text(0.5, 0.25, paste("plate ", i, " in exp ", j, sep=""))
+                                text(0.5, 0.05, "- only NAs available")
+                            dev.off()
+                            png(paste(plotName, "Exp", j, "Plate", i, ".png", sep="_"), 
+                            width=300, height=300)
+                                plot.new()
+                                text(0.5, 0.75, "Cannot generate plot for")
+                                text(0.5, 0.25, paste("plate ", i, " in exp ", j, sep=""))
+                                text(0.5, 0.05, "- only NAs available")
+                            dev.off()
                         }
-                        
-                        headerTemp<-strsplit(header[1], ", ")
-                        plotName<-paste(headerTemp[[1]][2], plotTitle, sep="_")
-                        
-                        pdf(paste(plotName, "Exp", j, "Plate", i, ".pdf", sep="_"))
-
-                            plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
-                            main=plotTitle, cex.main=0.8)
-                            
-                            if (flag2 == 0){
-                                abline(mean(currData, na.rm=T),0,col="blue")
-                            }
-                            if (flag2 == 1){
-                                abline(median(currData, na.rm=T),0,col="blue")
-                            }
-                            abline(sd2a,0,col="red")
-		            abline(sd2b,0,col="red")
-    		            abline(sd1a,0,col="green")
-                            abline(sd1b,0,col="green")
-                        dev.off()
-                        
-                        png(paste(plotName, "Exp", j, "Plate", i, ".png", sep="_"), 
-                        width=300, height=300)
-                        
-                            plot(currData, xaxt='n', ylim=c(yymin, yymax), ylab=col4plot, 
-                            main=plotTitle, cex.main=0.8)
-                            
-                            if (flag2 == 0){
-                                abline(mean(currData, na.rm=T),0,col="blue")
-                            }
-                            if (flag2 == 1){
-                                abline(median(currData, na.rm=T),0,col="blue")
-                            }
-                            abline(sd2a,0,col="red")
-		            abline(sd2b,0,col="red")
-    		            abline(sd1a,0,col="green")
-                            abline(sd1b,0,col="green")
-                        dev.off()
                     }
                 }
             }
@@ -667,40 +711,46 @@ plotTitle, showPlot){
 ylabCompute<-function(dataset, col4plot, flag2){
 
     currData<-dataset[[get("col4plot")]]
-
-    if (flag2 == 0){
-            
-	dev1<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
-	dev2<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
-	
-        if (dev1<min(currData, na.rm=T)){
-            yymin<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
-        }else{
-            yymin<-min(currData, na.rm=T)
-        }
-        
-        if (dev2>max(currData, na.rm=T)){
-            yymax<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
-        }else{
-            yymax<-max(currData, na.rm=T)
-        }
-    }
-
-    if (flag2 == 1){
     
-        dev1<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
-        dev2<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
+    if(sum(!is.na(currData))>0){
 
-        if (dev1<min(currData, na.rm=T)){
-            yymin<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
-        }else{
-            yymin<-min(currData, na.rm=T)
+        if (flag2 == 0){
+            
+	    dev1<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
+	    dev2<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
+	
+            if (dev1<min(currData, na.rm=T)){
+                yymin<-mean(currData, na.rm=T)-2*sd(currData, na.rm=T)
+            }else{
+                yymin<-min(currData, na.rm=T)
+            }
+        
+            if (dev2>max(currData, na.rm=T)){
+                yymax<-mean(currData, na.rm=T)+2*sd(currData, na.rm=T)
+            }else{
+                yymax<-max(currData, na.rm=T)
+            }
         }
-        if (dev2>max(currData, na.rm=T)){
-            yymax<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
-        }else{
-            yymax<-max(currData, na.rm=T)
+
+        if (flag2 == 1){
+    
+            dev1<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
+            dev2<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
+
+            if (dev1<min(currData, na.rm=T)){
+                yymin<-median(currData, na.rm=T)-2*mad(currData, na.rm=T)
+            }else{
+                yymin<-min(currData, na.rm=T)
+            }
+            if (dev2>max(currData, na.rm=T)){
+                yymax<-median(currData, na.rm=T)+2*mad(currData, na.rm=T)
+            }else{
+                yymax<-max(currData, na.rm=T)
+            }
         }
+    }else{
+        yymin<-NA
+        yymax<-NA
     }
 
     invisible(list(yymin, yymax))
@@ -1243,7 +1293,7 @@ ZPRIMEQualControl<-function(header, data, channel, plotTitle, showPlot){
 }
 
 
-SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle){
+SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle, showPlot){
 
     header<-readLines(dataSetFile, nbLinesHeader)
     data<-read.table(dataSetFile, skip=nbLinesHeader, colClasses=c(NA, NA, NA, NA, 
@@ -1253,8 +1303,10 @@ SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle){
 
     SNR<-data[[get("channel")]]/data[[get("noise")]]
 
-    if(interactive()){
-        hist(SNR, breaks=20, xlab="SNR per well")
+    if (showPlot==1){
+        if(interactive()){
+            hist(SNR, breaks=20, xlab="SNR per well")
+        }
     }
 
     numOfScreens<-max(data$ScreenNb)
@@ -1263,17 +1315,21 @@ SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle){
     c1<-ceiling(sqrt(length(unique(data$ScreenNb))))
     c2<-ceiling(length(unique(data$ScreenNb))/c1)
     
-    if(interactive()){
-        x11()
-        par(mfrow=c(c1, c2))
+    if (showPlot==1){
+        if(interactive()){
+            x11()
+            par(mfrow=c(c1, c2))
+        }
     }
     for (i in minOfScreens:numOfScreens){
         if (length(which(data$ScreenNb == i))>0){
             subsetSnr<-SNR[which(data$ScreenNb == i)]
             
-            if(interactive()){
-                hist(subsetSnr, breaks=20, xlab=paste("SNR per well", sep=" "), 
-                main=paste(plotTitle, "for Exp.", i, sep=" "))
+            if (showPlot==1){
+                if(interactive()){
+                    hist(subsetSnr, breaks=20, xlab=paste("SNR per well", sep=" "), 
+                    main=paste(plotTitle, "for Exp.", i, sep=" "))
+                }
             }
         }
     }
@@ -1286,11 +1342,13 @@ SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle){
             minOfPlates<-min(subset$LabtekNb)
             numOfPlates<-max(subset$LabtekNb)
             
-            if(interactive()){
-                x11()
-                c3<-ceiling(sqrt(length(unique(subset$LabtekNb))))
-                c4<-ceiling(length(unique(subset$LabtekNb))/c3)
-                par(mfrow=c(c3, c4))
+            if (showPlot==1){
+                if(interactive()){
+                    x11()
+                    c3<-ceiling(sqrt(length(unique(subset$LabtekNb))))
+                    c4<-ceiling(length(unique(subset$LabtekNb))/c3)
+                    par(mfrow=c(c3, c4))
+                }
             }
             
             for (i in minOfPlates:numOfPlates){
@@ -1298,9 +1356,11 @@ SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle){
                 
                     subsetSnr<-SNR[which(subset$LabtekNb == i)]
                     
-                    if(interactive()){
-                        hist(subsetSnr, breaks=20, xlab=paste("SNR per well", sep=" "), 
-                        main=paste(plotTitle, "for Exp.", j, "Plate", i, sep=" "))
+                    if (showPlot==1){
+                        if(interactive()){
+                            hist(subsetSnr, breaks=20, xlab=paste("SNR per well", sep=" "), 
+                            main=paste(plotTitle, "for Exp.", j, "Plate", i, sep=" "))
+                        }
                     }
                 }
             }
@@ -1354,7 +1414,7 @@ SNRQualControl<-function(dataSetFile, nbLinesHeader, channel, noise, plotTitle){
     }
 }
 
-DRQualControl<-function(header, data, nbLinesHeader, channel, plotTitle){
+DRQualControl<-function(header, data, nbLinesHeader, channel, plotTitle, showPlot){
 
     data<-data[which(data$SpotType!=-1), ]
 
@@ -1394,10 +1454,12 @@ DRQualControl<-function(header, data, nbLinesHeader, channel, plotTitle){
     }
     print("", quote=F)
     
-    if(interactive()){
-        plot(DR, xaxt='n', main=plotTitle, cex.main=0.8)
-        axis(1, 1:length(vekForPlot), labels=vekForPlot, xlab="Exp_Plate", 
-        cex.axis=0.6, las=2)
+    if (showPlot==1){
+        if(interactive()){
+            plot(DR, xaxt='n', main=plotTitle, cex.main=0.8)
+            axis(1, 1:length(vekForPlot), labels=vekForPlot, xlab="Exp_Plate", 
+            cex.axis=0.6, las=2)
+        }
     }
     
     headerTemp<-strsplit(header[1], ",")
@@ -1514,8 +1576,10 @@ plotDesign, showPlot){
                             Other<-subsubset[[get("channel")]][which(subsubset$SpotType == 2)]
 
                             if (sum(!is.na(All)) == 0){
-                                s1<-"Cannot plot histogram for Exp."
-                                print(paste(s1, j, "plate", i, "(only NAs in dataset)", sep=" "))
+                                plot.new()
+                                text(0.5, 0.75, "Cannot plot histogram for")
+				text(0.5, 0.25, paste("exp ", j, " plate ", i, sep=""))
+                                text(0.5, 0.05, "- only NAs available")
                             }else{
 
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
@@ -1608,6 +1672,11 @@ plotDesign, showPlot){
                                 legend("topleft", c("Data", "Positive Controls", "Negative Controls"), 
                                 angle=c(0, 45, -45), density=c(0, 20, 20), bty="n", cex=0.5)
                                 mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+                                text(0.5, 0.75, "Cannot plot histogram for")
+				text(0.5, 0.25, paste("exp ", j, " plate ", i, sep=""))
+                                text(0.5, 0.05, "- only NAs available") 
                             }
                         }
                     }
@@ -1655,6 +1724,11 @@ plotDesign, showPlot){
                                 legend("topleft", c("Data", "Positive Controls", "Negative Controls"), 
                                 angle=c(0, 45, -45), density=c(0, 20, 20), bty="n", cex=0.5)
                                 mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+                                text(0.5, 0.75, "Cannot plot histogram for")
+				text(0.5, 0.25, paste("exp ", j, " plate ", i, sep=""))
+                                text(0.5, 0.05, "- only NAs available")
                             }
                         }
                     }
@@ -1716,6 +1790,21 @@ plotDesign, showPlot){
                                 legend("topleft", c("Data", "Positive Controls", "Negative Controls"), 
                                 angle=c(0, 45, -45), density=c(0, 20, 20), bty="n", cex=0.5)
                                 mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            dev.off()
+                        }else{
+                            pdf(paste(histoName, "Exp", j, "PerPlate", i, ".pdf", sep="_"))
+                                plot.new()
+                                text(0.5, 0.75, "Cannot plot histogram for")
+				text(0.5, 0.25, paste("exp ", j, " plate ", i, sep=""))
+                                text(0.5, 0.05, "- only NAs available")
+                            dev.off()
+                            
+                            png(paste(histoName, "Exp", j, "PerPlate", i, ".png", sep="_"), 
+                            width=300, height=300)
+                                plot.new()
+                                text(0.5, 0.75, "Cannot plot histogram for")
+				text(0.5, 0.25, paste("exp ", j, " plate ", i, sep=""))
+                                text(0.5, 0.05, "- only NAs available")
                             dev.off()
                         }
                     }
@@ -2383,10 +2472,17 @@ showPlot){
     
                             subsubset<-subset[which(subset$LabtekNb == i), ]
     
-                            qqnorm(subsubset[[get("channel")]], 
-                            main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
-                            qqline(subsubset[[get("channel")]])
-                            mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+    
+                                qqnorm(subsubset[[get("channel")]], 
+                                main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
+                                qqline(subsubset[[get("channel")]])
+                                mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         }
                     }
                 }
@@ -2416,10 +2512,16 @@ showPlot){
                     
                             subsubset<-subset[which(subset$LabtekNb == i), ]
     
-                            qqnorm(subsubset[[get("channel")]], 
-                            main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
-                            qqline(subsubset[[get("channel")]])
-                            mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                qqnorm(subsubset[[get("channel")]], 
+                                main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
+                                qqline(subsubset[[get("channel")]])
+                                mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         }
                     }
                 dev.off()
@@ -2434,10 +2536,16 @@ showPlot){
                     
                             subsubset<-subset[which(subset$LabtekNb == i), ]
     
-                            qqnorm(subsubset[[get("channel")]], 
-                            main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
-                            qqline(subsubset[[get("channel")]])
-                            mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                qqnorm(subsubset[[get("channel")]], 
+                                main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
+                                qqline(subsubset[[get("channel")]])
+                                mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         }
                     }
                 dev.off()
@@ -2447,20 +2555,32 @@ showPlot){
                     if (length(which(subset$LabtekNb == i))>0){
                     
                         subsubset<-subset[which(subset$LabtekNb == i), ]
-    
+                        
                         pdf(paste(plotName, "Exp", j, "_PerPlate", i, ".pdf", sep=""))
-                            qqnorm(subsubset[[get("channel")]], 
-                            main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
-                            qqline(subsubset[[get("channel")]])
-                            mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                qqnorm(subsubset[[get("channel")]], 
+                                main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
+                                qqline(subsubset[[get("channel")]])
+                                mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         dev.off()
                         
                         png(paste(plotName, "Exp", j, "_PerPlate", i, ".png", sep=""), 
                         width=300, height=300)
-                            qqnorm(subsubset[[get("channel")]], 
-                            main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
-                            qqline(subsubset[[get("channel")]])
-                            mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                qqnorm(subsubset[[get("channel")]], 
+                                main=paste(plotTitle, "for plate", i, sep=" "), cex.main=0.8)
+                                qqline(subsubset[[get("channel")]])
+                                mtext(paste(plotTitle, "for Experiment", j, sep=" "), side=3, outer=T)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         dev.off()
                     }
                 }            
@@ -2648,8 +2768,38 @@ fileNameSuffix){
         minOfScreens<-min(dataset$ScreenNb)
 
         tempSubset<-createSubset(dataset, dataset$ScreenNb, 1)
-        vek<-c("SigIntensity", "Background", "NbCells", "PcCells")
-        tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, "GeneName", 
+
+        vek <- 0
+        if ("SigIntensity" %in% colnames(tempSubset)){
+            if (vek==0){
+                vek <- "SigIntensity"
+            }else{
+                vek <- c(vek, "SigIntensity")
+            }
+        }
+        if ("Background" %in% colnames(tempSubset)){
+            if (vek==0){
+                vek <- "Background"
+            }else{
+                vek <- c(vek, "Background")
+            }
+        }
+        if ("NbCells" %in% colnames(tempSubset)){
+            if (vek==0){
+                vek <- "NbCells"
+            }else{
+                vek <- c(vek, "NbCells")
+            }
+        }
+        if ("PcCells" %in% colnames(tempSubset)){
+            if (vek==0){
+                vek <- "PcCells"
+            }else{
+                vek <- c(vek, "PcCells")
+            }
+        }
+        
+        tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno, 
         NA_character_)
         matrixSummarizedReplicates<-matrix(0, nrow(tempVar), 
         length(unique(dataset$ScreenNb)))
@@ -2658,7 +2808,7 @@ fileNameSuffix){
             if (length(which(dataset$ScreenNb == i))>0){
         
                 tempSubset<-createSubset(dataset, dataset$ScreenNb, i)
-                tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, "GeneName", 
+                tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno, 
                 NA_character_)
                 matrixSummarizedReplicates[, i]<-as.vector(tempVar[[get("col4val")]])
                 
@@ -2933,8 +3083,14 @@ plotDesign, showPlot){
                             tempVec[subsubset$SpotType == 1]<-"Pos. controls"
                             tempVec[subsubset$SpotType == 2]<-"Exp. data"
 
-                            boxplot(subsubset[[get("channel")]]~tempVec, 
-                            main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                boxplot(subsubset[[get("channel")]]~tempVec, 
+                                main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            }else{
+                                plot.new()
+                                text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         }
                     }
                 }
@@ -2968,8 +3124,14 @@ plotDesign, showPlot){
                             tempVec[subsubset$SpotType == 1]<-"Pos. controls"
                             tempVec[subsubset$SpotType == 2]<-"Exp. data"
 
-                            boxplot(subsubset[[get("channel")]]~tempVec, 
-                            main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                boxplot(subsubset[[get("channel")]]~tempVec, 
+                                main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         }
                     }
                 dev.off()
@@ -2989,8 +3151,14 @@ plotDesign, showPlot){
                             tempVec[subsubset$SpotType == 1]<-"Pos. controls"
                             tempVec[subsubset$SpotType == 2]<-"Exp. data"
 
-                            boxplot(subsubset[[get("channel")]]~tempVec, 
-                            main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                boxplot(subsubset[[get("channel")]]~tempVec, 
+                                main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            }else{
+                                plot.new()
+				text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         }
                     }
                 dev.off()
@@ -3005,15 +3173,30 @@ plotDesign, showPlot){
                         tempVec[subsubset$SpotType == 0]<-"Neg. contr."
                         tempVec[subsubset$SpotType == 1]<-"Pos. contr."
                         tempVec[subsubset$SpotType == 2]<-"Exp. data"
+                        
                         pdf(paste(plotName, "_Exp_", j, "_PerPlate", i, ".pdf", sep=""))
-                            boxplot(subsubset[[get("channel")]]~tempVec, 
-                            main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                boxplot(subsubset[[get("channel")]]~tempVec, 
+                                main=paste(plotTitle, "for plate", i, sep=" "), ylab=channel, cex=0.8)
+                            }else{
+                                plot.new()
+			        text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         dev.off()
                         
                         png(paste(plotName, "_Exp_", j, "_PerPlate", i, ".png", sep=""), width=300, height=300)
-                            tit<-paste(plotTitle, "for plate", i, sep=" ")
-                            boxplot(subsubset[[get("channel")]]~tempVec, main=tit, ylab=channel, 
-                            cex.main=0.6, cex.lab=0.7, cex.axis=0.6)
+                        
+                            if(sum(!is.na(subsubset[[get("channel")]]))>0){
+                                tit<-paste(plotTitle, "for plate", i, sep=" ")
+                                boxplot(subsubset[[get("channel")]]~tempVec, main=tit, ylab=channel, 
+                                cex.main=0.6, cex.lab=0.7, cex.axis=0.6)
+                            }else{
+                                plot.new()
+                                text(0.5, 0.75, paste("No boxplot for plate ", i, sep=""))
+                                text(0.5, 0.25, paste(" exp ", j, " only NAs", sep=""))
+                            }
                         dev.off()
                     }
                 }            
@@ -3270,10 +3453,18 @@ makeBoxplot4PlateType<-function(header, dataset, channel, plotTitle, showPlot){
             for (i in minOfPlates:numOfPlates){
                 if (length(which(dataset$LabtekNb == i))>0){
                     subsetPlateType<-createSubset(dataset, dataset$LabtekNb, i)
-                    x11()
-                    tit<-paste(plotTitle, "for Plate", i, sep=" ")
-                    boxplot(subsetPlateType[[get("channel")]]~subsetPlateType$ScreenNb, main=tit, 
-                    xlab="Exp. ##", ylab=channel, cex=0.8, cex.main=0.8)    
+                    
+                    if(sum(!is.na(subsetPlateType[[get("channel")]]))>0){
+                    
+                        x11()
+                        tit<-paste(plotTitle, "for Plate", i, sep=" ")
+                        boxplot(subsetPlateType[[get("channel")]]~subsetPlateType$ScreenNb, main=tit, 
+                        xlab="Exp. #", ylab=channel, cex=0.8, cex.main=0.8)    
+                    }else{
+                        plot.new()
+                        text(0.5, 0.75, paste("Cannot plot plate type ", i, sep=""))
+                        text(0.5, 0.25, paste("- only NAs on plate", sep=""))
+                    }
                 }
             }
         }
@@ -3285,16 +3476,30 @@ makeBoxplot4PlateType<-function(header, dataset, channel, plotTitle, showPlot){
     for (i in minOfPlates:numOfPlates){
         if (length(which(dataset$LabtekNb == i))>0){
             subsetPlateType<-createSubset(dataset, dataset$LabtekNb, i)
-                
-            pdf(paste(plotName, " for Plate", i, ".pdf", sep=""))
-                tit<-paste(plotTitle, "for Plate", i, sep=" ")
-                boxplot(subsetPlateType[[get("channel")]]~subsetPlateType$ScreenNb, main=tit, xlab="Exp. ##", ylab=channel, cex=0.8, cex.main=0.8)    
-            dev.off()
             
-            png(paste(plotName, " for Plate", i, ".png", sep=""), width=300, height=300)
-                tit<-paste(plotTitle, "for Plate", i, sep=" ")
-                boxplot(subsetPlateType[[get("channel")]]~subsetPlateType$ScreenNb, main=tit, xlab="Exp. ##", ylab=channel, cex=0.8, cex.main=0.8)
-            dev.off()
+           if(sum(!is.na(subsetPlateType[[get("channel")]]))>0){
+            
+                pdf(paste(plotName, " for Plate", i, ".pdf", sep=""))
+                    tit<-paste(plotTitle, "for Plate", i, sep=" ")
+                    boxplot(subsetPlateType[[get("channel")]]~subsetPlateType$ScreenNb, main=tit, xlab="Exp. #", ylab=channel, cex=0.8, cex.main=0.8)    
+                dev.off()
+            
+                png(paste(plotName, " for Plate", i, ".png", sep=""), width=300, height=300)
+                    tit<-paste(plotTitle, "for Plate", i, sep=" ")
+                    boxplot(subsetPlateType[[get("channel")]]~subsetPlateType$ScreenNb, main=tit, xlab="Exp. #", ylab=channel, cex=0.8, cex.main=0.8)
+                dev.off()
+            }else{
+                pdf(paste(plotName, " for Plate", i, ".pdf", sep=""))
+                    plot.new()
+                    text(0.5, 0.75, paste("Cannot plot plate type ", i, sep=""))
+                    text(0.5, 0.25, paste("- only NAs on plate", sep=""))
+                dev.off()
+                png(paste(plotName, " for Plate", i, ".png", sep=""), width=300, height=300)
+                    plot.new()
+                    text(0.5, 0.75, paste("Cannot plot plate type ", i, sep=""))
+                    text(0.5, 0.25, paste("- only NAs on plate", sep=""))
+                dev.off()                
+            }
         }
     }    
     invisible(list(plotName, minOfPlates, numOfPlates))
@@ -3367,6 +3572,12 @@ showPlot){
                         TARGET=rep("main", nrow(dings$coord))), paste(basicPlotName, "Exp", j, 
                         "Plate", i, ".png", sep="_"))
                         close(con)
+                    }else{
+                        png(paste(basicPlotName, "Exp", j, "Plate", i, ".png", sep="_"), width=300, height=300)
+                            plot.new()
+                            text(0.5, 0.75, paste("Cannot plot plate", i, "Exp", j, sep=" "))
+                            text(0.5, 0.25, "Only NAs available") 
+                        dev.off()
                     }
                 }
             }
@@ -3555,7 +3766,7 @@ plotDesign, showPlot){
     invisible(list(plotName, minOfScreens, numOfScreens, maxCombinationNum))
 }
 
-compareReplicaPlates<-function(header, dataset, plotTitle, col4val){
+compareReplicaPlates<-function(header, dataset, plotTitle, col4val, showPlot){
 
     headerTemp<-strsplit(header[1], ",")
     plotName<-paste(headerTemp[[1]][2], plotTitle, ".pdf", sep="_")
@@ -3579,9 +3790,11 @@ compareReplicaPlates<-function(header, dataset, plotTitle, col4val){
             c1<-ceiling(sqrt(length(unique(dataset$ScreenNb))-count))
             c2<-ceiling((length(unique(dataset$ScreenNb))-count)/c1)
             
-            if(interactive()){
-                x11()
-                par(mfrow=c(c1, c2), oma=c(0, 0, 2, 0))
+            if (showPlot==1){
+                if(interactive()){
+                    x11()
+                    par(mfrow=c(c1, c2), oma=c(0, 0, 2, 0))
+                }
             }
             
             for (k in (j+1):numOfScreens){
@@ -3605,14 +3818,17 @@ compareReplicaPlates<-function(header, dataset, plotTitle, col4val){
 
                         xxlab<-paste("Plate", i, "Exp.", j, sep=" ")
                         yylab<-paste("Plate", i, "Exp.", k, sep=" ")
-                        if(interactive()){
-                            plot(firstPlate[[get("col4val")]], secondPlate[[get("col4val")]], 
-                            xlab=xxlab, ylab=yylab, xlim=c(min1, max1), ylim=c(min1, max1))
-                            lines(c(min1, max1), c(min1, max1))
                         
-                            textt<-paste(plotTitle, "plate", i, "from Exp.", j, "/ plate", i, 
-                            "from other exps", sep=" ")
-                            mtext(textt, side=3, outer=T, cex=0.6)
+                        if (showPlot==1){
+                            if(interactive()){
+                                plot(firstPlate[[get("col4val")]], secondPlate[[get("col4val")]], 
+                                xlab=xxlab, ylab=yylab, xlim=c(min1, max1), ylim=c(min1, max1))
+                                lines(c(min1, max1), c(min1, max1))
+                        
+                                textt<-paste(plotTitle, "plate", i, "from Exp.", j, "/ plate", i, 
+                                "from other exps", sep=" ")
+                                mtext(textt, side=3, outer=T, cex=0.6)
+                            }
                         }
                     }
                 }
@@ -3795,13 +4011,13 @@ col4anno, showPlot){
 
 
 
-controlDensity<-function(header, dataset, channel, plotTitle, showPlot){
+controlDensity<-function(header, dataset, channel, plotTitle, showPlot, supHisto){
 
     subsetPosControls<-dataset[which(dataset$SpotType == 1), ]
     subsetNegControls<-dataset[which(dataset$SpotType == 0), ]
 
-    posDens<-density(subsetPosControls[[get("channel")]])
-    negDens<-density(subsetNegControls[[get("channel")]])
+    posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+    negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
 
     minxlim=min(c(posDens$x, negDens$x))
     maxxlim=max(c(posDens$x, negDens$x))
@@ -3809,13 +4025,41 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot){
     minylim=min(c(posDens$y, negDens$y))
     maxylim=max(c(posDens$y, negDens$y))
     
+    if (supHisto==1){
+    
+        compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+        if (compuBreaks == 0){
+            compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+        }
+        
+        histNeg<-hist(subsetNegControls[[get("channel")]], 
+        breaks = seq(floor(minxlim), ceiling(maxxlim), 
+        compuBreaks), plot = FALSE)
+
+        histPos<-hist(subsetPosControls[[get("channel")]], 
+        breaks = seq(floor(minxlim), ceiling(maxxlim), 
+        compuBreaks), plot = FALSE)
+    }
+
+    
     if (showPlot == 1){
         if(interactive()){
             plot(posDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), 
-            col="green", main=plotTitle)
+            col="green", main = plotTitle)
         
             lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
             
+            if (supHisto==1){
+                ##superimpose histogram:
+                par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                par(fg="red")
+                lines(histNeg, axes=FALSE)
+                par(fg="green")
+                lines(histPos, axes=FALSE)
+                par(fg="black")
+                axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+            }
+
             legend("topleft", c("Positive Controls", "Negative Controls"), 
             col=c("green", "red"), lty=1)
         }
@@ -3828,6 +4072,16 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot){
         col="green", main=plotTitle)
         
         lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+        if (supHisto==1){
+            par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+            par(fg="red")
+            lines(histNeg, axes=FALSE)
+            par(fg="green")
+            lines(histPos, axes=FALSE)
+            par(fg="black")
+            axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+        }
         
         legend("topleft", c("Positive Controls", "Negative Controls"), 
         col=c("green", "red"), lty=1)
@@ -3838,6 +4092,16 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot){
         col="green", main=plotTitle, cex.lab=0.7, cex.axis=0.7)
         
         lines(negDens, xlim=c(minxlim,maxxlim), ylim=c(minylim,maxylim), col="red")
+
+        if (supHisto==1){
+            par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+            par(fg="red")
+            lines(histNeg, axes=FALSE)
+            par(fg="green")
+            lines(histPos, axes=FALSE)
+            par(fg="black")
+            axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+        }
         
         legend("topleft", c("Positive Controls", "Negative Controls"), 
         col=c("green","red"), lty=1, bty="n", cex=0.4)
@@ -3848,7 +4112,7 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot){
 
 
 controlDensityPerScreen<-function(header, dataset, channel, plotTitle, 
-showPlot){
+showPlot, supHisto){
 
     numOfScreens<-max(dataset$ScreenNb)
     minOfScreens<-min(dataset$ScreenNb)
@@ -3867,8 +4131,8 @@ showPlot){
                     subsetPosControls<-subset[which(subset$SpotType == 1), ]
                     subsetNegControls<-subset[which(subset$SpotType == 0), ]
 
-                    posDens<-density(subsetPosControls[[get("channel")]])
-                    negDens<-density(subsetNegControls[[get("channel")]])
+                    posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+                    negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
 
                     minxlim=min(c(posDens$x, negDens$x))
                     maxxlim=max(c(posDens$x, negDens$x))
@@ -3880,7 +4144,31 @@ showPlot){
                     col="green", main=plotTitle)
                 
                     lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
-                
+          
+                    if (supHisto==1){
+                    
+                        compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+		        if (compuBreaks == 0){
+		            compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                        }
+                    
+                        histNeg<-hist(subsetNegControls[[get("channel")]], 
+                        breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                        compuBreaks), plot = FALSE)
+
+                        histPos<-hist(subsetPosControls[[get("channel")]], 
+                        breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                        compuBreaks), plot = FALSE)
+                        
+                        par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                        par(fg="red")
+                        lines(histNeg, axes=FALSE)
+                        par(fg="green")
+                        lines(histPos, axes=FALSE)
+                        par(fg="black")
+                        axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                    }          
+          
                     legend("topleft", c("Positive Controls", "Negative Controls"), 
                     col=c("green", "red"), lty=1)
                 }
@@ -3899,8 +4187,8 @@ showPlot){
             subsetPosControls<-subset[which(subset$SpotType == 1), ]
             subsetNegControls<-subset[which(subset$SpotType == 0), ]
 
-            posDens<-density(subsetPosControls[[get("channel")]])
-            negDens<-density(subsetNegControls[[get("channel")]])
+            posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+            negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
 
             minxlim=min(c(posDens$x, negDens$x))
             maxxlim=max(c(posDens$x, negDens$x))
@@ -3913,6 +4201,30 @@ showPlot){
                 main=plotTitle)
                 
                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                if (supHisto==1){
+                
+                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+	            if (compuBreaks == 0){
+			compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                    }
+                
+                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                    compuBreaks), plot = FALSE)
+
+                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                    compuBreaks), plot = FALSE)
+                        
+                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                    par(fg="red")
+                    lines(histNeg, axes=FALSE)
+                    par(fg="green")
+                    lines(histPos, axes=FALSE)
+                    par(fg="black")
+                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                }   
                 
                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                 col=c("green", "red"), lty=1)
@@ -3923,6 +4235,30 @@ showPlot){
                 main=plotTitle, cex.lab=0.7, cex.axis=0.7)
                 
                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                if (supHisto==1){
+                
+                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+		    if (compuBreaks == 0){
+		        compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                    }
+                
+                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                    compuBreaks), plot = FALSE)
+
+                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                    compuBreaks), plot = FALSE)
+                        
+                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                    par(fg="red")
+                    lines(histNeg, axes=FALSE)
+                    par(fg="green")
+                    lines(histPos, axes=FALSE)
+                    par(fg="black")
+                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                }  
                 
                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                 col=c("green", "red"), lty=1, bty="n", cex=0.4)
@@ -3934,7 +4270,7 @@ showPlot){
 
 
 controlDensityPerPlate<-function(header, dataset, channel, plotTitle, 
-plotDesign, showPlot){
+plotDesign, showPlot, supHisto){
 
     numOfScreens<-max(dataset$ScreenNb)
     minOfScreens<-min(dataset$ScreenNb)
@@ -3967,10 +4303,12 @@ plotDesign, showPlot){
                             subsetNegControls<-subsubset[which(subsubset$SpotType == 0), ]
 
                             if(length(subsetPosControls[[get("channel")]])>1 
-                            & length(subsetNegControls[[get("channel")]])>1){
+                            & length(subsetNegControls[[get("channel")]])>1
+                            & sum(!is.na(subsetPosControls[[get("channel")]]))>0
+                            & sum(!is.na(subsetNegControls[[get("channel")]]))>0){
                         
-                                posDens<-density(subsetPosControls[[get("channel")]])
-                                negDens<-density(subsetNegControls[[get("channel")]])
+                                posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+                                negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
     
                                 minxlim=min(c(posDens$x, negDens$x))
                                 maxxlim=max(c(posDens$x, negDens$x))
@@ -3982,6 +4320,30 @@ plotDesign, showPlot){
                                 col="green", main=plotTitle)
                             
                                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                                if (supHisto==1){
+                                
+                                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+                                    if (compuBreaks == 0){
+					compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                                    }
+                                
+                                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+
+                                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+                        
+                                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                                    par(fg="red")
+                                    lines(histNeg, axes=FALSE)
+                                    par(fg="green")
+                                    lines(histPos, axes=FALSE)
+                                    par(fg="black")
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                }  
                             
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                                 col=c("green", "red"), lty=1)
@@ -4020,10 +4382,12 @@ plotDesign, showPlot){
                             subsetNegControls<-subsubset[which(subsubset$SpotType == 0), ]
 
                             if(length(subsetPosControls[[get("channel")]])>1 
-                            & length(subsetNegControls[[get("channel")]])>1){
+                            & length(subsetNegControls[[get("channel")]])>1
+                            & sum(!is.na(subsetPosControls[[get("channel")]]))>0
+                            & sum(!is.na(subsetNegControls[[get("channel")]]))>0){
                             
-                                posDens<-density(subsetPosControls[[get("channel")]])
-                                negDens<-density(subsetNegControls[[get("channel")]])
+                                posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+                                negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
 
                                 minxlim=min(c(posDens$x, negDens$x))
                                 maxxlim=max(c(posDens$x, negDens$x))
@@ -4035,11 +4399,37 @@ plotDesign, showPlot){
                                 col="green", main=plotTitle)
                                 
                                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                                if (supHisto==1){
+                                
+                                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+				    if (compuBreaks == 0){
+					compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                                    }
+                                
+                                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+
+                                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+                        
+                                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                                    par(fg="red")
+                                    lines(histNeg, axes=FALSE)
+                                    par(fg="green")
+                                    lines(histPos, axes=FALSE)
+                                    par(fg="black")
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                }  
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                                 col=c("green", "red"), lty=1)
                             }else{
-                                print(paste("Too little controls on plate", i, "to compute density"), sep=" ")
+                                plot.new()
+                                text(0.5, 0.75, "Too little controls on plate")
+                                text(0.5, 0.25, paste(i, "to compute density", sep=" "))
                             }
                         }
                     }
@@ -4062,8 +4452,8 @@ plotDesign, showPlot){
                             if(length(subsetPosControls[[get("channel")]])>1 
                             & length(subsetNegControls[[get("channel")]])>1){
                             
-                                posDens<-density(subsetPosControls[[get("channel")]])
-                                negDens<-density(subsetNegControls[[get("channel")]])
+                                posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+                                negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
 
                                 minxlim=min(c(posDens$x, negDens$x))
                                 maxxlim=max(c(posDens$x, negDens$x))
@@ -4075,11 +4465,37 @@ plotDesign, showPlot){
                                 col="green", main=plotTitle)
                                 
                                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                                if (supHisto==1){
+                                
+                                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+			            if (compuBreaks == 0){
+					compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                                    }
+                                
+                                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+
+                                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+                        
+                                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                                    par(fg="red")
+                                    lines(histNeg, axes=FALSE)
+                                    par(fg="green")
+                                    lines(histPos, axes=FALSE)
+                                    par(fg="black")
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                }  
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                                 col=c("green", "red"), lty=1)
                             }else{
-                                print(paste("Too little controls on plate", i, "to compute density"), sep=" ")
+                                plot.new()
+                                text(0.5, 0.75, "Too little controls on plate")
+                                text(0.5, 0.25, paste(i, "to compute density", sep=" "))
                             }
                         }
                     }
@@ -4098,8 +4514,8 @@ plotDesign, showPlot){
                         if(length(subsetPosControls[[get("channel")]])>1 
                         & length(subsetNegControls[[get("channel")]])>1){
                         
-                            posDens<-density(subsetPosControls[[get("channel")]])
-                            negDens<-density(subsetNegControls[[get("channel")]])
+                            posDens<-density(subsetPosControls[[get("channel")]], na.rm=TRUE)
+                            negDens<-density(subsetNegControls[[get("channel")]], na.rm=TRUE)
 
                             minxlim=min(c(posDens$x, negDens$x))
                             maxxlim=max(c(posDens$x, negDens$x))
@@ -4113,6 +4529,30 @@ plotDesign, showPlot){
                                 col="green", main=plotTitle)
                                 
                                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                                if (supHisto==1){
+                                
+                                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+				    if (compuBreaks == 0){
+					compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                                    }
+                                
+                                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+
+                                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+                        
+                                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                                    par(fg="red")
+                                    lines(histNeg, axes=FALSE)
+                                    par(fg="green")
+                                    lines(histPos, axes=FALSE)
+                                    par(fg="black")
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                }
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                                 col=c("green", "red"), lty=1)
@@ -4124,13 +4564,44 @@ plotDesign, showPlot){
                                 col="green", main=plotTitle, cex.lab=0.7, cex.axis=0.7)
                                 
                                 lines(negDens, xlim=c(minxlim, maxxlim), ylim=c(minylim, maxylim), col="red")
+
+                                if (supHisto==1){
+                                
+                                    compuBreaks<-round((ceiling(maxxlim)-floor(minxlim))/20)
+				    if (compuBreaks == 0){
+					compuBreaks<-(ceiling(maxxlim)-floor(minxlim))/20
+                                    }
+                                
+                                    histNeg<-hist(subsetNegControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+
+                                    histPos<-hist(subsetPosControls[[get("channel")]], 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    compuBreaks), plot = FALSE)
+                        
+                                    par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
+                                    par(fg="red")
+                                    lines(histNeg, axes=FALSE)
+                                    par(fg="green")
+                                    lines(histPos, axes=FALSE)
+                                    par(fg="black")
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                }  
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
                                 col=c("green", "red"), lty=1, bty="n", cex=0.4)
                             dev.off()
                             
                         }else{
-                            print(paste("Too little controls on plate", i, "to compute density"), sep=" ")
+                            pdf(paste(plotName, "_Exp_", j, "_PerPlate_", i, "_.pdf", sep=""))
+                                plot.new()
+                                text(0.5, 0.5, paste("Too little controls on plate", i, "to compute density", sep=" "))
+                            dev.off()
+                            png(paste(plotName, "_Exp_", j, "_PerPlate_", i, "_.png", sep=""), width=300, height=300)
+                                plot.new()
+                                text(0.5, 0.5, paste("Too little controls on plate", i, "to compute density", sep=" "))
+                            dev.off()
                         }
                     }
                 }

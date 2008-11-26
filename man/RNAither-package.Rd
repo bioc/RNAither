@@ -19,7 +19,7 @@ License: \tab Artistic License 2.0\cr
 
 }
 \author{
-Nora Rieber and Lars Kaderali, University of Heidelberg, Viroquant Research Group Modeling, Im Neuenheimer Feld 267, 69120 Heidelberg, Germany
+Nora Rieber and Lars Kaderali
 
-Maintainer: Nora Rieber <RNAither@gmx.de>
+Maintainer: Nora Rieber <Rieber Nor [at] gmx [dot] de>
 }
