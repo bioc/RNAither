@@ -1,6 +1,6 @@
 \name{BScore}
 \alias{BScore}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ BScore normalization }
 \description{
   Normalization with BScores (see References).

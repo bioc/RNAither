@@ -142,7 +142,7 @@ PercCells<-rep(0, totalNumberOfSpots)
     s3<-paste("comments", comments, sep=",")
     write.table(s3, file=outputFile, quote=F, col.names=F, row.names=F, append=T)
 
-    write.table(dataFrame, file=outputFile, sep="\t", quote=F, append=T)
+    suppressWarnings({write.table(dataFrame, file=outputFile, sep="\t", quote=F, append=T)})
 }
 
 

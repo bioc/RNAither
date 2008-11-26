@@ -1,6 +1,6 @@
 \name{MannWhitney}
 \alias{MannWhitney}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Perform a Mann-Whitney test }
 \description{
   Performs the non-parametric Mann-Whitney test on the intensity data.
@@ -8,7 +8,7 @@
 \usage{
 MannWhitney(dataset, listofargs)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
   \item{listofargs}{ a list containing: 

@@ -1,15 +1,15 @@
 \name{channelPlot}
 \alias{channelPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Plot signal channels against each other }
 \description{
   Generates plots allowing pairwise comparison of signal channels. Fits a lowess regression curve into the plots.
 }
 
 \usage{
-channelPlot(header, dataset, vecOfChannels, flag, plotTitle, showPlot)
+channelPlot(header, dataset, vecOfChannels, flag, plotTitle, showPlot, smSpan=2/3)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
@@ -17,6 +17,7 @@ channelPlot(header, dataset, vecOfChannels, flag, plotTitle, showPlot)
   \item{flag}{ 0, 1, or 2. 0 uses the data from the complete dataset, 1 makes comparisons for each experiment, 2 makes comparisons for each plate. }
   \item{plotTitle}{ The plot title }
   \item{showPlot}{ 0 or 1. 1 will open one or several plot windows in the R GUI, 0 will only save the plot(s) without opening windows. }
+  \item{smSpan}{ The smoother span of the lowess curve. This gives the proportion of points in the plot which influence the smooth at each value. Larger values give more smoothness. Optional, defaults to 2/3}
 }
 
 \value{

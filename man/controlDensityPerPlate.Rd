@@ -1,14 +1,14 @@
 \name{controlDensityPerPlate}
 \alias{controlDensityPerPlate}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Plotting the control density per plate }
 \description{
   Plots the density of positive and negative controls (if applicable) for each plate.
 }
 \usage{
-controlDensityPerPlate(header, dataset, channel, plotTitle, plotDesign, showPlot)
+controlDensityPerPlate(header, dataset, channel, plotTitle, plotDesign, showPlot, supHisto)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
@@ -16,6 +16,7 @@ controlDensityPerPlate(header, dataset, channel, plotTitle, plotDesign, showPlot
   \item{plotTitle}{ the plot title }
   \item{plotDesign}{ 1 or 2. 1 will generate one window containing all plots, 2 will generate a series of plots }
   \item{showPlot}{ 0 or 1. 1 will open one or several plot windows in the R GUI, 0 will only save the plot(s) without opening windows }
+  \item{supHisto}{ 0 or 1. 1 will additionally superimpose a colour histogram of the values for the positive and negative controls. Otherwise choose 0.}
 }
 
 \value{
@@ -34,6 +35,6 @@ The function returns a list of length 3 containing:
 data(exampleHeader, package="RNAither")
 data(exampleDataset, package="RNAither")
 
-controlDensityPerPlate(header, dataset, "SigIntensity", "Control density", 1, 1)
+controlDensityPerPlate(header, dataset, "SigIntensity", "Control density", 1, 1, 1)
 }
 \keyword{ device }

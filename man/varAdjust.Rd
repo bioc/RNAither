@@ -1,6 +1,6 @@
 \name{varAdjust}
 \alias{varAdjust}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Variance adjustment }
 \description{
   Divides the intensity values by their median absolute deviation (of the experiment or of the plate)
@@ -8,15 +8,15 @@
 \usage{
 varAdjust(header, dataset, listOfArgs)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
   \item{listOfArgs}{ a list containing: 
 
-- 1 or 2, 1 meaning a normalization per screen, 2 a normalization per plate
-
 - a character string specifying the column whose values will be used for normalization
+
+- 1 or 2, 1 meaning a normalization per screen, 2 a normalization per plate
 
 - a flag specifying whether controls should be excluded for the computation of the median absolute deviation (1) or not (0). }
 }

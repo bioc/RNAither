@@ -1,6 +1,6 @@
 \name{LiWongRank}
 \alias{LiWongRank}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Li Wong rank / invariant probeset normalization }
 \description{
   Performs a Li Wong rank / invariant probeset normalization (see References).
@@ -8,7 +8,7 @@
 \usage{
 LiWongRank(header, dataset, listOfArgs)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
@@ -40,9 +40,9 @@ data(exampleDataset, package="RNAither")
 
 normres <- LiWongRank(header, dataset, list("SigIntensity", "GeneName"))
 0.5
+3
 2
-2
-2
+3
 newheader=normres[[1]]
 newdataset=normres[[2]]
 }

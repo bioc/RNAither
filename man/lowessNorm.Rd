@@ -1,6 +1,6 @@
 \name{lowessNorm}
 \alias{lowessNorm}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Lowess normalization }
 \description{
   Performs a plate-wise lowess normalization of the data.
@@ -8,7 +8,7 @@
 \usage{
 lowessNorm(header, dataset, listOfArgs)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
@@ -17,6 +17,8 @@ lowessNorm(header, dataset, listOfArgs)
 - a character string specifying the column used as channel 1 (colname4ch1)
 
 - a character string specifying the column used as channel 2 (colname4ch2)
+
+- optionally: the smoother span (smSpan) of the lowess function. This gives the proportion of points which influence the smooth at each value. Larger values give more smoothness. Defaults to 2/3.
 }
 }
 \value{
