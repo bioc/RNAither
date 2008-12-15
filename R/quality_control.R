@@ -3536,21 +3536,22 @@ showPlot){
                         posNegLabelVec[which(subsubset$SpotType == 0)]<-"N"
                         posNegLabelVec[which(subsubset$SpotType == 1)]<-"P"
 
+                        ColNo<-max(subsubset$ColNb)
+                        RowNo<-max(subsubset$RowNb)
+                        
                         if (showPlot == 1){
                             if(interactive()){
                                 x11()
+                                dings<-plotPlate((as.numeric(t(subsubset[[get("col4plot")]]))), ncol=ColNo, 
+			        nrow=RowNo, char=posNegLabelVec, cex.char=0.8, 
+			        main=paste(plotTitle, "plate", i, "Exp.", j, sep=" "), 
+                                col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
                             }
                         }
-                        ColNo<-max(subsubset$ColNb)
-                        RowNo<-max(subsubset$RowNb)
-                    
-                        dings<-plotPlate((as.numeric(t(subsubset[[get("col4plot")]]))), ncol=ColNo, 
-                        nrow=RowNo, char=posNegLabelVec, cex.char=0.8, 
-                        main=paste(plotTitle, "plate", i, "Exp.", j, sep=" "), 
-                        col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
+                                                
                     
                         png(paste(basicPlotName, "Exp", j, "Plate", i, "4html.png", sep="_"), width=300, height=300)
-                            plotPlate((as.numeric(t(subsubset[[get("col4plot")]]))), ncol=ColNo, 
+                            dings<-plotPlate((as.numeric(t(subsubset[[get("col4plot")]]))), ncol=ColNo, 
                             nrow=RowNo, char=posNegLabelVec, cex.char=0.8, 
                             main=paste(plotTitle, "plate", i, "Exp.", j, sep=" "), 
                             col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
@@ -3883,7 +3884,7 @@ compareReplicaPlates<-function(header, dataset, plotTitle, col4val, showPlot){
 }
 
 
-compareReplicateSD<-function(header, dataset, plotTitle, colname4SD, col4anno){
+compareReplicateSD<-function(header, dataset, plotTitle, colname4SD, col4anno, showPlot){
 
     temp1<-generateReplicateMat(dataset, 2, "Intensities", colname4SD, col4anno)
 
@@ -3909,15 +3910,20 @@ compareReplicateSD<-function(header, dataset, plotTitle, colname4SD, col4anno){
     posNegLabelVec[indexNegControls]<-"N"
     posNegLabelVec[indexPosControls]<-"P"
 
-    dings<-plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
-    cex.char=0.8, main=plotTitle, col=brewer.pal(9, "YlOrBr"), cex.main=0.8, 
-    na.action='xout')
+    if (showPlot == 1){
+        if(interactive()){
+            x11()
+            dings<-plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
+	    cex.char=0.8, main=plotTitle, col=brewer.pal(9, "YlOrBr"), cex.main=0.8, 
+            na.action='xout')
+        }
+    }
 
     headerTemp<-strsplit(header[1], ",")
     basicPlotName<-paste(headerTemp[[1]][2], plotTitle, sep="_")
 
     png(paste(basicPlotName, "4html.png", sep=" "), width=300, height=300)
-        plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
+        dings<-plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
         cex.char=0.8, main=plotTitle, col=brewer.pal(9, "YlOrBr"), cex.main=0.8, 
         na.action='xout')
     dev.off()
@@ -3976,11 +3982,11 @@ col4anno, showPlot){
             if (showPlot == 1){
                 if(interactive()){
                     x11()
+                    dings<-plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
+		    cex.char=0.8, main=paste(plotTitle, ", Exp", i, sep=""), 
+                    col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
                 }
             }
-            dings<-plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
-            cex.char=0.8, main=paste(plotTitle, ", Exp", i, sep=""), 
-            col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
 
             headerTemp<-strsplit(header[1], ",")
             basicPlotName<-paste(headerTemp[[1]][2], plotTitle, sep="_")
@@ -3992,7 +3998,7 @@ col4anno, showPlot){
             dev.off()
 
             png(paste(basicPlotName, "Exp", i, ".png", sep="_"), width=dings$width, height=dings$height)
-                dings<-plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
+                plotPlate(sdVec, ncol=ColNo, nrow=RowNo, char=posNegLabelVec, 
                 cex.char=0.8, main=paste(plotTitle, ", Exp", i, sep=""), 
                 col=brewer.pal(9, "YlOrBr"), cex.main=0.8, na.action='xout')
             dev.off()
@@ -4058,6 +4064,7 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot, supHisto
                 lines(histPos, axes=FALSE)
                 par(fg="black")
                 axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                abline(0,0,col="black")
             }
 
             legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4081,6 +4088,7 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot, supHisto
             lines(histPos, axes=FALSE)
             par(fg="black")
             axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+            abline(0,0,col="black")
         }
         
         legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4101,6 +4109,7 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot, supHisto
             lines(histPos, axes=FALSE)
             par(fg="black")
             axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+            abline(0,0,col="black")
         }
         
         legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4166,7 +4175,8 @@ showPlot, supHisto){
                         par(fg="green")
                         lines(histPos, axes=FALSE)
                         par(fg="black")
-                        axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                        axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                        abline(0,0,col="black")
                     }          
           
                     legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4223,7 +4233,8 @@ showPlot, supHisto){
                     par(fg="green")
                     lines(histPos, axes=FALSE)
                     par(fg="black")
-                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                    abline(0,0,col="black")
                 }   
                 
                 legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4257,7 +4268,8 @@ showPlot, supHisto){
                     par(fg="green")
                     lines(histPos, axes=FALSE)
                     par(fg="black")
-                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                    abline(0,0,col="black")
                 }  
                 
                 legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4342,7 +4354,8 @@ plotDesign, showPlot, supHisto){
                                     par(fg="green")
                                     lines(histPos, axes=FALSE)
                                     par(fg="black")
-                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                                    abline(0,0,col="black")
                                 }  
                             
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4421,7 +4434,8 @@ plotDesign, showPlot, supHisto){
                                     par(fg="green")
                                     lines(histPos, axes=FALSE)
                                     par(fg="black")
-                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                                    abline(0,0,col="black")
                                 }  
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4487,7 +4501,8 @@ plotDesign, showPlot, supHisto){
                                     par(fg="green")
                                     lines(histPos, axes=FALSE)
                                     par(fg="black")
-                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                                    abline(0,0,col="black")
                                 }  
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4551,7 +4566,8 @@ plotDesign, showPlot, supHisto){
                                     par(fg="green")
                                     lines(histPos, axes=FALSE)
                                     par(fg="black")
-                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                                    abline(0,0,col="black")
                                 }
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
@@ -4586,7 +4602,8 @@ plotDesign, showPlot, supHisto){
                                     par(fg="green")
                                     lines(histPos, axes=FALSE)
                                     par(fg="black")
-                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))                        
+                                    axis(4, 0:(4*max(c(histNeg$counts, histPos$counts))))
+                                    abline(0,0,col="black")
                                 }  
                                 
                                 legend("topleft", c("Positive Controls", "Negative Controls"), 
