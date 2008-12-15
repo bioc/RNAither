@@ -1707,7 +1707,7 @@ plotDesign, showPlot){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
                                     d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, c)
+                                    computeHistoBreaks=seq(a, b, d)
                                 }
 
                                 all<-hist(Other, plot=F, breaks=computeHistoBreaks)
