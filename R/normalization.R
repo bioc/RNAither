@@ -597,11 +597,15 @@ ZScore<-function(header, dataset, listOfArgs){
                         specialSubset<-specialSubset[which(specialSubset$SpotType == 2), ]
                     }
 
-                    if (mad(specialSubset[[get("col4val")]], na.rm=T)!=0){
-                        c1<-subsubset[[get("col4val")]]
-                        c2<-median(specialSubset[[get("col4val")]], na.rm=T)
-                        c3<-mad(specialSubset[[get("col4val")]], na.rm=T)
-                        temp<-(c1-c2)/c3
+                    if (sum(!is.na(specialSubset[[get("col4val")]]))!=0){
+                        if (mad(specialSubset[[get("col4val")]], na.rm=T)!=0){
+                            c1<-subsubset[[get("col4val")]]
+                            c2<-median(specialSubset[[get("col4val")]], na.rm=T)
+                            c3<-mad(specialSubset[[get("col4val")]], na.rm=T)
+                            temp<-(c1-c2)/c3
+                        }else{
+                            temp<-rep(NA_integer_, nrow(subsubset))
+                        }
                     }else{
                         temp<-rep(NA_integer_, nrow(subsubset))
                     }
@@ -641,11 +645,15 @@ ZScorePerScreen<-function(header, dataset, listOfArgs){
                 specialSubset<-specialSubset[which(specialSubset$SpotType == 2), ]
             }
 
-            if (mad(specialSubset[[get("col4val")]], na.rm=T)!=0){
-                c1<-subset[[get("col4val")]]
-                c2<-median(specialSubset[[get("col4val")]], na.rm=T)
-                c3<-mad(specialSubset[[get("col4val")]], na.rm=T)
-                temp<-(c1-c2)/c3
+            if (sum(!is.na(specialSubset[[get("col4val")]]))!=0){
+                if (mad(specialSubset[[get("col4val")]], na.rm=T)!=0){
+                    c1<-subset[[get("col4val")]]
+                    c2<-median(specialSubset[[get("col4val")]], na.rm=T)
+                    c3<-mad(specialSubset[[get("col4val")]], na.rm=T)
+                    temp<-(c1-c2)/c3
+                }else{
+                    temp<-rep(NA_integer_, nrow(subset))
+                }
             }else{
                 temp<-rep(NA_integer_, nrow(subset))
             }
