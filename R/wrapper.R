@@ -1205,10 +1205,10 @@ secondLineBis, indexOutput, subPage, flag){
         
         if (flag == 0){
             zeugs<-compareReplicateSD(header, dataset, paste("SD (", i, ") of replicates", 
-            sep=""), vecOfChannels[i], "GeneName")
+            sep=""), vecOfChannels[i], "GeneName", 0)
         }else{
             zeugs<-compareReplicateSD(header, dataset, paste("SD (", i, 
-            ") of norm. replicates (", flag, ")", sep=""), vecOfChannels[i], "GeneName")
+            ") of norm. replicates (", flag, ")", sep=""), vecOfChannels[i], "GeneName", 0)
         }
         
         write.table(paste("<TD BGCOLOR=\"#f0f0ff\"><CENTER><A HREF=\"", subPage, 
@@ -1238,10 +1238,10 @@ secondLineBis, indexOutput, subPage, flag){
     for (i in 1:length(vecOfChannels)){
         if (flag == 0){
             zeugs<-compareReplicateSD(header, dataset, paste("SD (", i, ") of replicates", 
-            sep=""), vecOfChannels[i], "GeneName")
+            sep=""), vecOfChannels[i], "GeneName", 0)
         }else{
             zeugs<-compareReplicateSD(header, dataset, paste("SD (", i, 
-            ") of norm. replicates (", flag, ")", sep=""), vecOfChannels[i], "GeneName")
+            ") of norm. replicates (", flag, ")", sep=""), vecOfChannels[i], "GeneName", 0)
         }
         
         write.table(paste("<TD BGCOLOR=\"#f0f0ff\"><CENTER><A HREF=\"", zeugs, 
