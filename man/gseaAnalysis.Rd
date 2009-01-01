@@ -21,12 +21,12 @@ A table containing the enriched GO terms and their significance.
 
 Adrian Alexa and Jorg Rahnenfuhrer (2006). topGO: Enrichment analysis for Gene Ontology. R package version 1.4.0. }
 
-\seealso{ \code{\link{GOannotate}} }
+\seealso{ \code{\link{GOannotate}}, \code{\link{Ttest}} }
 \examples{
 data(scoredDataset1, package="RNAither")
 data(pValVec1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 scoredHits1 <- hitselectionPval(scoredDataset1, pValVec1, "SigIntensity", "Hits1", 0.1, 
 "GeneName", "pvalue_testfile1.txt")

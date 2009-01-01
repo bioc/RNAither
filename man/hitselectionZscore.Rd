@@ -47,12 +47,12 @@ A list containing:
 }
 \references{ N. Malo et al. Statistical practice in high-throughput screening data analysis. Nature Biotech, 24(2): 167-175, 2006. }
 
-\seealso{ \code{\link{hitselectionPval}}, \code{\link{hitselectionZscorePval}} }
+\seealso{ \code{\link{hitselectionPval}}, \code{\link{hitselectionZscorePval}}, \code{\link{Ttest}} }
 \examples{
 data(scoredDataset1, package="RNAither")
 data(pValVec1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 scoredHits1 <- hitselectionZscore(scoredDataset1, "SigIntensity", "Zscore_hits", -10, 
 2, 1, "GeneName", median, "Zscores_testfile1.txt")

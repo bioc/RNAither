@@ -23,6 +23,8 @@ The plot is saved in a pdf and a png file named after the experiment name specif
 The function returns the plot name.
 }
 
+\seealso{ \code{\link{Ttest}}, \code{\link{MannWhitney}} }
+
 \examples{
 data(exampleHeader, package="RNAither")
 
@@ -32,7 +34,7 @@ data(scoredDataset1, package="RNAither")
 data(scoredDataset2, package="RNAither")
 
 ##for details on the generation of pValVec and scoredDataset, 
-##see \code{\link{Ttest}} and \code{\link{MannWhitney}}
+##see the examples of the functions Ttest and MannWhitney linked above.
 
 scoredHits1 <- hitselectionPval(scoredDataset1, pValVec1, "SigIntensity", "pValue.ttest_l", 0.05, 
 "GeneName", "pvalue_testfile1.txt")

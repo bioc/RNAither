@@ -32,12 +32,12 @@ A list containing:
   P-values and the intensity values for each siRNA are stored in a text output file.
 }
 
-\seealso{ \code{\link{hitselectionZscore}}, \code{\link{hitselectionZscorePval}} }
+\seealso{ \code{\link{hitselectionZscore}}, \code{\link{hitselectionZscorePval}}, \code{\link{Ttest}} }
 \examples{
 data(scoredDataset1, package="RNAither")
 data(pValVec1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 scoredHits1 <- hitselectionPval(scoredDataset1, pValVec1, "SigIntensity", "Pval_hits", 0.05, 
 "GeneName", "pvalue_testfile1.txt")

@@ -1,6 +1,6 @@
 \name{volcanoPlot}
 \alias{volcanoPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Making a volcano plot }
 \description{
   Makes a volcano plot of the data.
@@ -8,7 +8,7 @@
 \usage{
 volcanoPlot(header, dataset, col4plotx, col4ploty, col4anno, plotTitle, sigLevel, showPlot)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
@@ -28,12 +28,14 @@ The plot is saved in a pdf and a png file named after the experiment name specif
 The function returns the plot name.
 }
 
+\seealso{ \code{\link{Ttest}} }
+
 \examples{
 data(exampleHeader, package="RNAither")
 data(pValVec1, package="RNAither")
 data(scoredDataset1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 scoredHits1 <- hitselectionPval(scoredDataset1, pValVec1, "SigIntensity", "pValue.ttest_l", 0.05, 
 "GeneName", "pvalue_testfile1.txt")

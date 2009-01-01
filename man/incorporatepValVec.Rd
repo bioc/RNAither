@@ -21,7 +21,7 @@ incorporatepValVec(dataset, pValVec, replicaMatrix, col4anno, colname4pval)
 Returns the dataset with an added column of p-values.
 }
 
-\seealso{\code{\link{multTestAdjust}} }
+\seealso{\code{\link{multTestAdjust}}, \code{\link{Ttest}} }
 \examples{
 data(exampleDataset, package="RNAither")
 
@@ -29,7 +29,7 @@ data(scoredDataset1, package="RNAither")
 ##scoredDataset1 already contains the p-value column
 data(pValVec1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 temp <- generateReplicateMat(dataset, 1, "Intensities", "SigIntensity",  "GeneName")
 replicamatrix <- temp[[1]]
