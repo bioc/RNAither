@@ -17,7 +17,7 @@ compareHits(hitVec1, hitVec2, namesHitVec1, namesHitVec2)
 Returns a character vector indicating which siRNAs are identified as hits in two different hit scoring schemes.
 }
 
-\seealso{ \code{\link{vennDiag}} }
+\seealso{ \code{\link{vennDiag}} , \code{\link{Ttest}}, \code{\link{MannWhitney}} }
 \examples{
 data(scoredDataset1, package="RNAither")
 data(pValVec1, package="RNAither")
@@ -26,7 +26,7 @@ data(scoredDataset2, package="RNAither")
 data(pValVec2, package="RNAither")
 
 ##for details on the generation of pValVec and scoredDataset,
-##see \code{\link{Ttest}} and \code{\link{MannWhitney}}
+##see the examples of the functions Ttest and MannWhitney linked above.
 
 scoredHits1 <- hitselectionPval(scoredDataset1, pValVec1, "SigIntensity", "Hits1", 0.05, 
 "GeneName", "pvalue_testfile1.txt")

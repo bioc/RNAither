@@ -1,6 +1,6 @@
 \name{spatialDistribHits}
 \alias{spatialDistribHits}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Plotting the spatial distribution of the hits }
 \description{
   Plots the plates showing the spatial distribution of the hits using the \code{ plotPlate} function of the \code{ prada} package.
@@ -8,7 +8,7 @@
 \usage{
 spatialDistribHits(header, dataset, plotTitle, col4hits, col4anno, showPlot)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }
@@ -33,12 +33,14 @@ The function returns a list containing:
   \item{c(minOfPlates, numOfPlates) }{a vector with the number of the first plate and the number of the last plate}
 }
 
+\seealso{ \code{\link{Ttest}} }
+
 \examples{
 data(exampleHeader, package="RNAither")
 data(pValVec1, package="RNAither")
 data(scoredDataset1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 scoredHits1 <- hitselectionPval(scoredDataset1, pValVec1, "SigIntensity", "Hits1", 0.05, 
 "GeneName", "pvalue_testfile1.txt")

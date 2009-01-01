@@ -41,12 +41,12 @@ A list containing:
 ZScores and p-values are stored in a text output file.
 }
 
-\seealso{ \code{\link{hitselectionPval}}, \code{\link{hitselectionZscore}} }
+\seealso{ \code{\link{hitselectionPval}}, \code{\link{hitselectionZscore}}, \code{\link{Ttest}} }
 \examples{
 data(scoredDataset1, package="RNAither")
 data(pValVec1, package="RNAither")
 
-##for details on the generation of pValVec1 and scoredDataset1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1 and scoredDataset1, see the example of the Ttest function linked above.
 
 scoredHits1 <- hitselectionZscorePval(scoredDataset1, pValVec1, "SigIntensity", 
 "Zscore_pval_hits", -1.5, 0.05, -2, "GeneName", median, "Zscores_pvals_testfile1.txt")

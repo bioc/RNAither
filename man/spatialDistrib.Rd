@@ -1,6 +1,6 @@
 \name{spatialDistrib}
 \alias{spatialDistrib}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Generate spatial plots of intensity values }
 \description{
   Generate plots of plates and their intensity values.
@@ -8,7 +8,7 @@
 \usage{
 spatialDistrib(header, dataset, plotTitle, col4plot, col4anno, showPlot)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{header}{ the header of a dataset file generated with \code{\link{generateDatasetFile}} }
   \item{dataset}{ an R data frame generated with \code{\link{generateDatasetFile}} }

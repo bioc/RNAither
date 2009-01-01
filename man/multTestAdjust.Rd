@@ -18,12 +18,12 @@ multTestAdjust(pValVec, adjustMethod)
 Returns a vector of corrected p-values. Can be integrated into a dataframe with the function \code{\link{incorporatepValVec}}.
 }
 
-\seealso{ \code{\link{incorporatepValVec}} }
+\seealso{ \code{\link{incorporatepValVec}}, \code{\link{Ttest}} }
 
 \examples{
 data(pValVec1, package="RNAither")
 
-##for details on the generation of pValVec1, see \code{\link{Ttest}}
+##for details on the generation of pValVec1, see the example of the Ttest function linked above.
 
 newpvalvec <- multTestAdjust(pValVec1,"fdr")
 }
