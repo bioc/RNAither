@@ -21,7 +21,7 @@ A table containing the enriched GO terms and their significance.
 
 Adrian Alexa and Jorg Rahnenfuhrer (2006). topGO: Enrichment analysis for Gene Ontology. R package version 1.4.0. }
 
-\seealso{ \code{\link{GOannotate}}, \code{\link{Ttest}} }
+\seealso{ \code{\link{Ttest}} }
 \examples{
 data(scoredDataset1, package="RNAither")
 data(pValVec1, package="RNAither")
