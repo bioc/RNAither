@@ -24,7 +24,7 @@ Returns the dynamic range for each plate in the shell and saves them in a text f
 Shows a plot of the dynamic range values and saves it as a pdf file under the experiment name specified in the header concatenated with the function argument \code{ plotTitle}.
 }
 
-\references{ M. Boutros, L. Bras, and W. Huber. Analysis of cell-based RNAi screens. \textit{Genome Biol}, 7(7): R66, 2006. }
+\references{ M. Boutros, L. Bras, and W. Huber. Analysis of cell-based RNAi screens. \emph{Genome Biol}, 7(7): R66, 2006. }
 
 \examples{
 data(exampleHeader, package="RNAither")
