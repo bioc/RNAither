@@ -10,7 +10,7 @@ gseaAnalysis<-function(hitVector, whichOnto){
     if(whichOnto == "molecular_function"){
         whichOnto<-"MF"    
     }
-    if(whichOnto == "cell_component"){
+    if(whichOnto == "cellular_component"){
         whichOnto<-"CC"    
     }
     
@@ -41,7 +41,7 @@ gseaAnalysisPt2<-function(hitVector, GOlist, whichOnto){
     if(whichOnto == "molecular_function"){
         whichOnto<-"MF"    
     }
-    if(whichOnto == "cell_component"){
+    if(whichOnto == "cellular_component"){
         whichOnto<-"CC"    
     }
     
