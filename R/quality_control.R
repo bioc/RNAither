@@ -1485,18 +1485,31 @@ plotControlHisto<-function(header, dataset, channel, plotTitle, showPlot){
     if (sum(!is.na(All)) == 0){
         stop("Cannot plot histogram (only NAs in dataset)")
     }
-
+#######
+#    if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#        a<-min(All, na.rm=T)
+#        b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#        computeHistoBreaks=seq(a, b, d)
+#    }else{
+#        a<-min(All, na.rm=T)
+#        b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#        computeHistoBreaks=seq(a, b, d)
+#    }
+######### Changes Will Greenwood (22.07.2009):
     if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
         a<-min(All, na.rm=T)
         b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-        computeHistoBreaks=seq(a, b, d)
+        d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+        computeHistoBreaks=seq(a, b, length=d)
     }else{
         a<-min(All, na.rm=T)
         b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-        computeHistoBreaks=seq(a, b, d)
+        d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+        computeHistoBreaks=seq(a, b, length=d)
     }
+######### End of changes Will Greenwood (22.07.2009)
 
     all<-hist(Other, plot=F, breaks=computeHistoBreaks)
     pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1582,17 +1595,31 @@ plotDesign, showPlot){
                                 text(0.5, 0.05, "- only NAs available")
                             }else{
 
+#######
+#                                if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }else{
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }
+######### Changes Will Greenwood (22.07.2009):
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }else{
                                     a<-min(All, na.rm=T)
-                                    b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
-                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, d)
+                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+                                    d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }
+######### End of changes Will Greenwood (22.07.2009)
 
                                 all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                                 pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1645,18 +1672,33 @@ plotDesign, showPlot){
                             Pos<-subsubset[[get("channel")]][which(subsubset$SpotType == 1)]
                             Other<-subsubset[[get("channel")]][which(subsubset$SpotType == 2)]
 
-                            if (sum(!is.na(All))!=0){    
+                            if (sum(!is.na(All))!=0){   
+                            
+#######
+#                                if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }else{
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
+#                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }
+######### Changes Will Greenwood (22.07.2009):
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }else{
                                     a<-min(All, na.rm=T)
-                                    b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
-                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, d)
+                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+                                    d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }
+######### End of changes Will Greenwood (22.07.2009)
 
                                 all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                                 pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1698,17 +1740,31 @@ plotDesign, showPlot){
                             Other<-subsubset[[get("channel")]][which(subsubset$SpotType == 2)]
 
                             if (sum(!is.na(All))!=0){    
+#######
+#                                if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }else{
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
+#                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }
+######### Changes Will Greenwood (22.07.2009):
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }else{
                                     a<-min(All, na.rm=T)
-                                    b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
-                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, d)
+                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+                                    d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }
+######### End of changes Will Greenwood (22.07.2009)
 
                                 all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                                 pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1746,18 +1802,31 @@ plotDesign, showPlot){
                         Other<-subsubset[[get("channel")]][which(subsubset$SpotType == 2)]
                         
                         if (sum(!is.na(All))!=0){
-    
+#######    
+#                            if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                a<-min(All, na.rm=T)
+#                                b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                computeHistoBreaks=seq(a, b, d)
+#                            }else{
+#                                a<-min(All, na.rm=T)
+#                                b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
+#                                d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                computeHistoBreaks=seq(a, b, d)
+#                            }
+######### Changes Will Greenwood (22.07.2009):
                             if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                 a<-min(All, na.rm=T)
                                 b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                computeHistoBreaks=seq(a, b, d)
+                                d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                computeHistoBreaks=seq(a, b, length=d)
                             }else{
                                 a<-min(All, na.rm=T)
-                                b<-max(All, na.rm=T)+abs(a+0.5)+((max(All, na.rm=T)-a+1)/20)
-                                d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                computeHistoBreaks=seq(a, b, d)
+                                b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+                                d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                computeHistoBreaks=seq(a, b, length=d)
                             }
+######### End of changes Will Greenwood (22.07.2009)
 
                             all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                             pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1846,18 +1915,31 @@ plotDesign, showPlot){
                         s1<-"Cannot plot histogram for Exp."
                         print(paste(s1, i, "(only NAs in dataset)", sep=" "))
                     }else{
-
+#######
+#                        if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }else{
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }
+######### Changes Will Greenwood (22.07.2009):
                         if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }else{
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }
+######### End of changes Will Greenwood (22.07.2009)    
     
                         all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                         pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1898,17 +1980,31 @@ plotDesign, showPlot){
 
                     if (sum(!is.na(All))!=0){
 
+#######
+#                        if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }else{
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }
+######### Changes Will Greenwood (22.07.2009):
                         if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }else{
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }
+######### End of changes Will Greenwood (22.07.2009) 
     
                         all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                         pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1945,17 +2041,31 @@ plotDesign, showPlot){
 
                     if (sum(!is.na(All))!=0){
 
+#######
+#                        if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }else{
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }
+######### Changes Will Greenwood (22.07.2009):
                         if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }else{
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }
+######### End of changes Will Greenwood (22.07.2009) 
     
                         all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                         pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -1988,18 +2098,31 @@ plotDesign, showPlot){
                 Other<-subset[[get("channel")]][which(subset$SpotType == 2)]
 
                 if (sum(!is.na(All))!=0){
-
+#######
+#                    if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                        a<-min(All, na.rm=T)
+#                        b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                        computeHistoBreaks=seq(a, b, d)
+#                    }else{
+#                        a<-min(All, na.rm=T)
+#                        b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                        computeHistoBreaks=seq(a, b, d)
+#                    }
+######### Changes Will Greenwood (22.07.2009):
                     if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                         a<-min(All, na.rm=T)
                         b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                        computeHistoBreaks=seq(a, b, d)
+                        d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                        computeHistoBreaks=seq(a, b, length=d)
                     }else{
                         a<-min(All, na.rm=T)
                         b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                        computeHistoBreaks=seq(a, b, d)
+                        d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                        computeHistoBreaks=seq(a, b, length=d)
                     }
+######### End of changes Will Greenwood (22.07.2009) 
     
                     all<-hist(Other, plot=F, breaks=computeHistoBreaks)
                     pos<-hist(Pos, plot=F, breaks=computeHistoBreaks)
@@ -2049,17 +2172,31 @@ plotHisto<-function(header, dataset, channel, plotTitle, showPlot){
         stop("Cannot plot histogram (only NAs in dataset)")
     }
 
+#######
+#    if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#        a<-min(All, na.rm=T)
+#        b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#        computeHistoBreaks=seq(a, b, d)
+#    }else{
+#        a<-min(All, na.rm=T)
+#        b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#        computeHistoBreaks=seq(a, b, d)
+#    }
+######### Changes Will Greenwood (22.07.2009):
     if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
         a<-min(All, na.rm=T)
         b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-        computeHistoBreaks=seq(a, b, d)
+        d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+        computeHistoBreaks=seq(a, b, length=d)
     }else{
         a<-min(All, na.rm=T)
         b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-        computeHistoBreaks=seq(a, b, d)
+        d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+        computeHistoBreaks=seq(a, b, length=d)
     }
+######### End of changes Will Greenwood (22.07.2009) 
 
     if (showPlot == 1){
         if(interactive()){
@@ -2114,18 +2251,31 @@ showPlot){
                                 s1<-"Cannot plot histogram for Exp."
                                 print(paste(s1, j, "plate", i, "(only NAs in dataset)", sep=" "))
                             }else{
-
+#######
+#                                if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }else{
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }
+######### Changes Will Greenwood (22.07.2009):
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }else{
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }
+######### End of changes Will Greenwood (22.07.2009) 
                         
                                 hist(All, breaks=computeHistoBreaks, 
                                 main=paste(plotTitle, "for plate", i, sep=" "), xlab=channel, cex.main=0.6)
@@ -2163,18 +2313,31 @@ showPlot){
                             All<-subsubset[[get("channel")]][which(subsubset$SpotType!=-1)]
     
                             if (sum(!is.na(All))!=0){
-    
+#######
+#                                if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }else{
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }
+######### Changes Will Greenwood (22.07.2009):
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }else{
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }
+######### End of changes Will Greenwood (22.07.2009) 
 
                                 hist(All, breaks=computeHistoBreaks, 
                                 main=paste(plotTitle, "for plate", i, sep=" "), xlab=channel, cex.main=0.7)
@@ -2197,18 +2360,31 @@ showPlot){
                             All<-subsubset[[get("channel")]][which(subsubset$SpotType!=-1)]
     
                             if (sum(!is.na(All))!=0){
-    
+#######
+#                                if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }else{
+#                                    a<-min(All, na.rm=T)
+#                                    b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                    computeHistoBreaks=seq(a, b, d)
+#                                }
+######### Changes Will Greenwood (22.07.2009):
                                 if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                    d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }else{
                                     a<-min(All, na.rm=T)
                                     b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                                    d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                    computeHistoBreaks=seq(a, b, d)
+                                    d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                    computeHistoBreaks=seq(a, b, length=d)
                                 }
+######### End of changes Will Greenwood (22.07.2009) 
 
                                 hist(All, breaks=computeHistoBreaks, 
                                 main=paste(plotTitle, "for plate", i, sep=" "), xlab=channel, cex.main=0.7)
@@ -2226,18 +2402,31 @@ showPlot){
                         All<-subsubset[[get("channel")]][which(subsubset$SpotType!=-1)]
                         
                         if (sum(!is.na(All))!=0){
-    
+#######   
+#                            if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                                a<-min(All, na.rm=T)
+#                                b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                                d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                                computeHistoBreaks=seq(a, b, d)
+#                            }else{
+#                                a<-min(All, na.rm=T)
+#                                b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                                d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                                computeHistoBreaks=seq(a, b, d)
+#                            }
+######### Changes Will Greenwood (22.07.2009):
                             if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                                 a<-min(All, na.rm=T)
                                 b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                                d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                                computeHistoBreaks=seq(a, b, d)
+                                d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                computeHistoBreaks=seq(a, b, length=d)
                             }else{
                                 a<-min(All, na.rm=T)
                                 b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                                d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                                computeHistoBreaks=seq(a, b, d)
+                                d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                                computeHistoBreaks=seq(a, b, length=d)
                             }
+######### End of changes Will Greenwood (22.07.2009) 
 
                             pdf(paste(histoName, "Exp", j, "PerPlate", i, ".pdf", sep=""))
                                 hist(All, breaks=computeHistoBreaks, 
@@ -2289,17 +2478,31 @@ showPlot){
                         s1<-"Cannot plot histogram for Exp."
                         print(paste(s1, i, "(only NAs in dataset)", sep=" "))
                     }else{
+#######                     
+#                        if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }else{
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }
+######### Changes Will Greenwood (22.07.2009):
                         if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }else{
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }
+######### End of changes Will Greenwood (22.07.2009) 
     
                         hist(All, breaks=computeHistoBreaks, 
                         main=paste(plotTitle, "for Exp.", i, sep=" "), xlab=channel, cex.main=0.8)
@@ -2326,18 +2529,31 @@ showPlot){
                     All<-subset[[get("channel")]][which(subset$SpotType!=-1)]
 
                     if (sum(!is.na(All))!=0){
-
+#######                     
+#                        if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }else{
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }
+######### Changes Will Greenwood (22.07.2009):
                         if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                            computeHistoBreaks=seq(a, b, d)    
+                            d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }else{
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }
+######### End of changes Will Greenwood (22.07.2009) 
     
                         hist(All, breaks=computeHistoBreaks, 
                         main=paste(plotTitle, "for Exp.", i, sep=" "), xlab=channel, cex.main=0.6)
@@ -2358,18 +2574,31 @@ showPlot){
                     All<-subset[[get("channel")]][which(subset$SpotType!=-1)]
 
                     if (sum(!is.na(All))!=0){
-
+#######                     
+#                        if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }else{
+#                            a<-min(All, na.rm=T)
+#                            b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                            computeHistoBreaks=seq(a, b, d)
+#                        }
+######### Changes Will Greenwood (22.07.2009):
                         if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                            d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                            computeHistoBreaks=seq(a, b, d)    
+                            d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }else{
                             a<-min(All, na.rm=T)
                             b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                            d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                            computeHistoBreaks=seq(a, b, d)
+                            d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                            computeHistoBreaks=seq(a, b, length=d)
                         }
+######### End of changes Will Greenwood (22.07.2009) 
     
                         hist(All, breaks=computeHistoBreaks, 
                         main=paste(plotTitle, "for Exp.", i, sep=" "), xlab=channel, cex.main=0.6)
@@ -2386,18 +2615,32 @@ showPlot){
                 All<-subset[[get("channel")]][which(subset$SpotType!=-1)]
 
                 if (sum(!is.na(All))!=0){
-
+####### 
+#                    if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
+#                        a<-min(All, na.rm=T)
+#                        b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+#                        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
+#                        computeHistoBreaks=seq(a, b, d)    
+#                    }else{
+#                        a<-min(All, na.rm=T)
+#                        b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
+#                        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
+#                        computeHistoBreaks=seq(a, b, d)
+#                    }
+######### Changes Will Greenwood (22.07.2009):
                     if (round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)!=0){
                         a<-min(All, na.rm=T)
                         b<-max(All, na.rm=T)+(round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
-                        d<-round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20)
-                        computeHistoBreaks=seq(a, b, d)    
+                        d<-ceiling((b-a)/round((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                        computeHistoBreaks=seq(a, b, length=d)
                     }else{
                         a<-min(All, na.rm=T)
                         b<-max(All, na.rm=T)+abs(min(All, na.rm=T)+0.5)
-                        d<-(max(All, na.rm=T)-min(All, na.rm=T)+1)/20
-                        computeHistoBreaks=seq(a, b, d)
+                        d<-ceiling((b-a)/((max(All, na.rm=T)-min(All, na.rm=T)+1)/20))
+                        computeHistoBreaks=seq(a, b, length=d)
                     }
+######### End of changes Will Greenwood (22.07.2009)                     
+                    
                     pdf(paste(histoName, "(Exp. ", i, ").pdf", sep=""))
                         hist(All, breaks=computeHistoBreaks, 
                         main=paste(plotTitle, "for Exp.", i, sep=" "), xlab=channel, cex.main=0.6)
@@ -2798,22 +3041,55 @@ fileNameSuffix){
                 vek <- c(vek, "PcCells")
             }
         }
-        
-        tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno, 
-        NA_character_)
-        matrixSummarizedReplicates<-matrix(0, nrow(tempVar), 
-        length(unique(dataset$ScreenNb)))
+              
+#        tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno, 
+#        NA_character_)
+#        matrixSummarizedReplicates<-matrix(0, nrow(tempVar), 
+#        length(unique(dataset$ScreenNb)))
 
+#        for (i in minOfScreens:numOfScreens){
+#            if (length(which(dataset$ScreenNb == i))>0){
+        
+#                tempSubset<-createSubset(dataset, dataset$ScreenNb, i)
+#                tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno, 
+#                NA_character_)
+#                matrixSummarizedReplicates[, i]<-as.vector(tempVar[[get("col4val")]])                
+#            }
+#        }
+######### Changes Will Greenwood (22.07.2009):
         for (i in minOfScreens:numOfScreens){
             if (length(which(dataset$ScreenNb == i))>0){
-        
+	
+                tempSubset<-createSubset(dataset, dataset$ScreenNb, i)
+                tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno,
+                NA_character_)
+                if (nrow(tempVar) > numberOfRows){
+                    numberOfRows = nrow(tempVar)
+                }
+            }
+        }
+	
+        matrixSummarizedReplicates<-matrix(0, numberOfRows, 
+        length(unique(dataset$ScreenNb)))
+	
+        for (i in minOfScreens:numOfScreens){
+            if (length(which(dataset$ScreenNb == i))>0){
+	            
                 tempSubset<-createSubset(dataset, dataset$ScreenNb, i)
                 tempVar<-summarizeRepsNoFiltering(tempSubset, rms, vek, col4anno, 
                 NA_character_)
+	
+                if ((numberOfRows - nrow(tempVar)) > 0 ){
+                    for(j in (nrow(tempVar)):(numberOfRows-1)){
+                        tempVar = rbind(tempVar, NA_character_)
+                    }
+                }
                 matrixSummarizedReplicates[, i]<-as.vector(tempVar[[get("col4val")]])
-                
             }
         }
+######### End of changes Will Greenwood
+        
+        
         result<-cor(matrixSummarizedReplicates, use="complete.obs", method="spearman")
 
         headerTemp<-strsplit(header[1], ",")
