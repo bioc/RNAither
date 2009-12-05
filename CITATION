@@ -1,0 +1,22 @@
+citHeader("To cite RNAither in publications use:")
+
+citEntry(entry="article",
+    author = "Nora Rieber and Bettina Knapp and Roland Eils and Lars Kaderali",
+    title = "RNAither, an automated pipeline for the statistical analysis of high-throughput RNAi screens",
+    journal = "Bioinformatics",
+    year = "2009",
+    volume = "25",
+    number = "5",
+    pages ="678",
+
+    textVersion = 
+    paste("Rieber N, Knapp B, Eils R, Kaderali L. RNAither, an automated",
+         "pipeline for the statistical analysis of high-throughput RNAi",
+         "screens. Bioinformatics 25(5):678 (2009).",
+)
+    )
+
+citFooter("This free open-source software implements academic
+research by the authors and co-workers. If you use it,
+please support the project by citing the appropriate
+journal articles.")
