@@ -4096,7 +4096,9 @@ compareReplicaPlates<-function(header, dataset, plotTitle, col4val, showPlot){
                         xxlab<-paste("Plate", i, "Exp.", j, sep=" ")
                         yylab<-paste("Plate", i, "Exp.", k, sep=" ")
                         
-                        if (showPlot==1){
+                        if ((showPlot==1) 
+                        & (sum(!is.na(firstPlate[[get("col4val")]]))>0)
+                        & (sum(!is.na(secondPlate[[get("col4val")]]))>0)) {
                             if(interactive()){
                                 plot(firstPlate[[get("col4val")]], secondPlate[[get("col4val")]], 
                                 xlab=xxlab, ylab=yylab, xlim=c(min1, max1), ylim=c(min1, max1))
@@ -4144,13 +4146,18 @@ compareReplicaPlates<-function(header, dataset, plotTitle, col4val, showPlot){
 
                             xxlab<-paste("Plate", i, "Exp.", j, sep=" ")
                             yylab<-paste("Plate", i, "Exp.", k, sep=" ")
-                            plot(firstPlate[[get("col4val")]], secondPlate[[get("col4val")]], 
-                            xlab=xxlab, ylab=yylab, xlim=c(min1, max1), ylim=c(min1, max1))
+                            
+                            if ((sum(!is.na(firstPlate[[get("col4val")]]))>0)
+                            & (sum(!is.na(secondPlate[[get("col4val")]]))>0)) {
+                            
+                                plot(firstPlate[[get("col4val")]], secondPlate[[get("col4val")]], 
+                                xlab=xxlab, ylab=yylab, xlim=c(min1, max1), ylim=c(min1, max1))
                         
-                            lines(c(min1, max1), c(min1, max1))
-                            textt<-paste(plotTitle, "plate", i, "from Exp.", j, "/ plate", i, 
-                            "from other exps", sep=" ")
-                            mtext(textt, side=3, outer=T, cex=0.6)
+                                lines(c(min1, max1), c(min1, max1))
+                                textt<-paste(plotTitle, "plate", i, "from Exp.", j, "/ plate", i, 
+                                "from other exps", sep=" ")
+                                mtext(textt, side=3, outer=T, cex=0.6)
+                            }
                         }
                     }
                 }
