@@ -140,7 +140,7 @@ LiWongRank<-function(header, dataset, listOfArgs){
                 c6<-currPlate[[get("col4val")]][lineOfGene]
                 currPlate[[get("col4val")]]<-c5/c6
 
-                tempSubset[[get("col4val")]][min(IXXj):max(IXXj)]<-currPlate[[get("col4val")]]
+                tempSubset[[get("col4val")]][IXXj]<-currPlate[[get("col4val")]]
             }
         }
         dataset[[get("col4val")]][IXXi]<-tempSubset[[get("col4val")]]
@@ -179,7 +179,7 @@ varAdjust<-function(header, dataset, listOfArgs){
                 c1<-subset[[get("col4val")]]
                 c2<-mad(specialSubset[[get("col4val")]], na.rm=T)
                 subset[[get("col4val")]]<-c1/c2
-                dataset[[get("col4val")]][min(IXX):max(IXX)]<-subset[[get("col4val")]]
+                dataset[[get("col4val")]][IXX]<-subset[[get("col4val")]]
             }
         }
     }
@@ -208,10 +208,10 @@ varAdjust<-function(header, dataset, listOfArgs){
                         c2<-mad(specialSubset[[get("col4val")]], na.rm=T)
                         subsubset[[get("col4val")]]<-c1/c2
                         
-                        subset[[get("col4val")]][min(IXXj):max(IXXj)]<-subsubset[[get("col4val")]]
+                        subset[[get("col4val")]][IXXj]<-subsubset[[get("col4val")]]
                     }
                 }
-                dataset[[get("col4val")]][min(IXXi):max(IXXi)]<-subset[[get("col4val")]]
+                dataset[[get("col4val")]][IXXi]<-subset[[get("col4val")]]
             }
         }
     }
@@ -267,7 +267,7 @@ divNorm <- function(header, dataset, listOfArgs){
                     c2<-funName(specialSubset[[get("col4val")]], na.rm=T)
                     subset[[get("col4val")]]<-c1-c2
                 }
-                dataset[[get("col4val")]][min(IXX):max(IXX)]<-subset[[get("col4val")]]
+                dataset[[get("col4val")]][IXX]<-subset[[get("col4val")]]
             }
         }
     }
@@ -301,10 +301,10 @@ divNorm <- function(header, dataset, listOfArgs){
                             c2<-funName(specialSubset[[get("col4val")]], na.rm=T)
                             subsubset[[get("col4val")]]<-c1-c2
                         }
-                        subset[[get("col4val")]][min(IXXj):max(IXXj)]<-subsubset[[get("col4val")]]
+                        subset[[get("col4val")]][IXXj]<-subsubset[[get("col4val")]]
                     }
                 }
-                dataset[[get("col4val")]][min(IXXi):max(IXXi)]<-subset[[get("col4val")]]
+                dataset[[get("col4val")]][IXXi]<-subset[[get("col4val")]]
             }
         }
     }
@@ -472,7 +472,7 @@ quantileNormalization<-function(header, dataset, listOfArgs){
                         subset[[get("col4val")]][m]<-zurueckFuehrung[naCounter]
                     }
                 }
-                dataset[[get("col4val")]][min(IXXi):max(IXXi)]<-subset[[get("col4val")]]
+                dataset[[get("col4val")]][IXXi]<-subset[[get("col4val")]]
             }
         }
     }
@@ -525,7 +525,14 @@ BScore <- function(header, dataset, listOfArgs){
                     c1<-subsubset[[get("col4val")]]
                     c2<-max(subsubset$RowNb)
                     c3<-max(subsubset$ColNb)
-                    medPolishMatrix<-matrix(c1, c2, c3, byrow=T)
+                    
+                    
+                    ####added on 15.02.2010:
+                    medPolishMatrix<-matrix(NA, c2, c3, byrow=T)
+                    for (p in 1:length(c1)){
+                        medPolishMatrix[subsubset$RowNb[p],subsubset$ColNb[p]]<-c1[p]
+                    }
+                    ##############
 
                     fitResults<-medpolish(medPolishMatrix, maxiter=100, trace.iter=FALSE, na.rm=TRUE)
                     BscoreMat<-fitResults$residuals/mad(fitResults$residuals, na.rm=TRUE)
@@ -552,14 +559,19 @@ BScore <- function(header, dataset, listOfArgs){
                         }
                     }
                     
-                    cou<-0
-                    for (k in seq(min(IXXj), max(IXXj), max(subsubset$ColNb))){
-                        cou<-cou+1
-                        subset[[get("col4val")]][k:(k+max(subsubset$ColNb)-1)]<-BscoreMat[cou, ]
+                    #cou<-0
+                    #for (k in seq(min(IXXj), max(IXXj), max(subsubset$ColNb))){
+                    #    cou<-cou+1
+                    #    subset[[get("col4val")]][k:(k+max(subsubset$ColNb)-1)]<-BscoreMat[cou, ]
+                    #}
+                    ####added on 15.02.2010:
+                    for (k in 1:length(c1)){
+                        subsubset[[get("col4val")]][k]<-BscoreMat[subsubset$RowNb,subsubset$ColNb]
                     }
+                    ##############
                 }
             }
-            dataset[[get("col4val")]][min(IXXi):max(IXXi)]<-subset[[get("col4val")]]
+            dataset[[get("col4val")]][IXXi]<-subset[[get("col4val")]]
         }
     }
 
@@ -609,10 +621,10 @@ ZScore<-function(header, dataset, listOfArgs){
                     }else{
                         temp<-rep(NA_integer_, nrow(subsubset))
                     }
-                    subset[[get("col4val")]][min(IXXj):max(IXXj)]<-temp
+                    subset[[get("col4val")]][IXXj]<-temp
                 }
             }
-            dataset[[get("col4val")]][min(IXXi):max(IXXi)]<-subset[[get("col4val")]]
+            dataset[[get("col4val")]][IXXi]<-subset[[get("col4val")]]
         }
     }
 
@@ -658,7 +670,7 @@ ZScorePerScreen<-function(header, dataset, listOfArgs){
                 temp<-rep(NA_integer_, nrow(subset))
             }
         
-            dataset[[get("col4val")]][min(IXXi):max(IXXi)]<-temp
+            dataset[[get("col4val")]][IXXi]<-temp
         }
     }
 
@@ -737,12 +749,12 @@ lowessNorm<-function(header, dataset, listOfArgs){
                     subsubset[[get("col4ch1")]]<-retX
                     subsubset[[get("col4ch2")]]<-retY
 
-                    subset[[get("col4ch1")]][min(IXXj):max(IXXj)]<-subsubset[[get("col4ch1")]]
-                    subset[[get("col4ch2")]][min(IXXj):max(IXXj)]<-subsubset[[get("col4ch2")]]
+                    subset[[get("col4ch1")]][IXXj]<-subsubset[[get("col4ch1")]]
+                    subset[[get("col4ch2")]][IXXj]<-subsubset[[get("col4ch2")]]
                 }
             }
-            dataset[[get("col4ch1")]][min(IXXi):max(IXXi)]<-subset[[get("col4ch1")]]
-            dataset[[get("col4ch2")]][min(IXXi):max(IXXi)]<-subset[[get("col4ch2")]]
+            dataset[[get("col4ch1")]][IXXi]<-subset[[get("col4ch1")]]
+            dataset[[get("col4ch2")]][IXXi]<-subset[[get("col4ch2")]]
         }
     }
 
