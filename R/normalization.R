@@ -566,7 +566,7 @@ BScore <- function(header, dataset, listOfArgs){
                     #}
                     ####added on 15.02.2010:
                     for (k in 1:length(c1)){
-                        subsubset[[get("col4val")]][k]<-BscoreMat[subsubset$RowNb,subsubset$ColNb]
+                        subset[[get("col4val")]][k]<-BscoreMat[subsubset$RowNb,subsubset$ColNb]
                     }
                     ##############
                 }
