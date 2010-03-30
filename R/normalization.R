@@ -106,9 +106,18 @@ LiWongRank<-function(header, dataset, listOfArgs){
 
         hist(rankSDpersiRNA, breaks<-20)
         
-        s1<-"Plate type"
-        s2<-"- Set a threshold to print out invariant probe set genes\r\n"
-        userInput<-readline(paste(s1, i, s2, sep=" "))
+        if(interactive()){
+        	s1<-"Plate type"
+	        s2<-"- Set a threshold to print out invariant probe set genes\r\n"
+	        userInput<-readline(paste(s1, i, s2, sep=" "))
+	}else{
+	    if(i==1){
+	        userInput<-0.5
+            }
+            if(i==2){
+                userInput<-2
+            }
+	}
         
         tempVecc<-geneList[[i]]
 
@@ -119,8 +128,12 @@ LiWongRank<-function(header, dataset, listOfArgs){
             c2<-as.double(rankSDpersiRNA[rankSDpersiRNA<as.double(userInput)])
             print(cbind(c1, c2))
             
-            s1<-"Choose one gene for normalization - Input row number above.\r\n"
-            userInput2<-readline(s1)
+            if(interactive()){
+                s1<-"Choose one gene for normalization - Input row number above.\r\n"
+                userInput2<-readline(s1)
+            }else{
+                userInput2<-3
+            }
         }else{
             stop("No genes under threshold. Normalization aborted.")
         }
@@ -149,8 +162,6 @@ LiWongRank<-function(header, dataset, listOfArgs){
     header[3]<-paste(header[3], "LiWongRank,")
     invisible(list(header, dataset))
 }
-
-
 
 
 

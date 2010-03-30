@@ -39,10 +39,6 @@ data(exampleHeader, package="RNAither")
 data(exampleDataset, package="RNAither")
 
 normres <- LiWongRank(header, dataset, list("SigIntensity", "GeneName"))
-0.5
-3
-2
-3
 newheader=normres[[1]]
 newdataset=normres[[2]]
 }
