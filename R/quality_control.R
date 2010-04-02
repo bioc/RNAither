@@ -841,9 +841,13 @@ numCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
     }else{
         print(cbind(lineNbsUnderThreshNumCells, linesUnderThreshNumCells))
     }
-
-    s3<-"\r\nTo set new lower threshold enter value, otherwise \"n\".\r\n\r\n"
-    userInput1<-readline(s3)
+    
+    if(interactive()){
+        s3<-"\r\nTo set new lower threshold enter value, otherwise \"n\".\r\n\r\n"
+    	userInput1<-readline(s3)
+    }else{
+    	userInput1<-"n"
+    }
     
     if (!is.na(as.integer(userInput1))){
     ##set new user-defined threshold:
@@ -866,8 +870,12 @@ numCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         }
     }
 
-    s5<-"\r\nDiscard all wells under lower threshold? [y-n]\r\n\r\n"
-    userInput2<-readline(s5)
+    if(interactive()){
+        s5<-"\r\nDiscard all wells under lower threshold? [y-n]\r\n\r\n"
+        userInput2<-readline(s5)
+    }else{
+        userInput2<-"y"
+    }
     if (!is.na(match(userInput2, "y")) & match(userInput2, "y") == 1){
         
         data$SpotType[lineNbsUnderThreshNumCells]<-(-1)
@@ -904,8 +912,12 @@ numCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         print(cbind(lineNbsOverUpperThreshNumCells, linesOverUpperThreshNumCells))
     }
 
-    s8<-"\r\nTo set new upper threshold enter value, otherwise \"n\".\r\n\r\n"
-    userInput3<-readline(s8)
+    if(interactive()){
+        s8<-"\r\nTo set new upper threshold enter value, otherwise \"n\".\r\n\r\n"
+        userInput3<-readline(s8)
+    }else{
+        userInput3<-"n"
+    }
     
     if (!is.na(as.integer(userInput3))){
         linesOverUpperThreshNumCells<-data[which(data$NbCells>as.double(userInput3)), ]
@@ -928,8 +940,12 @@ numCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         }
     }
 
-    s1<-"\r\nDiscard all wells over upper threshold? [y-n]\r\n\r\n"
-    userInput4<-readline(s1)
+    if(interactive()){
+        s1<-"\r\nDiscard all wells over upper threshold? [y-n]\r\n\r\n"
+        userInput4<-readline(s1)
+    }else{
+        userInput4<-"n"
+    }
     if (!is.na(match(userInput4, "y")) & match(userInput4, "y") == 1){
 
         data$SpotType[lineNbsOverUpperThreshNumCells]<-(-1)
@@ -1031,8 +1047,12 @@ percCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         print(cbind(lineNbsUnderthreshPcCells, linesUnderthreshPcCells))
     }
 
-    s2<-"\r\n\r\nTo set new lower threshold enter value, otherwise \"n\"\r\n\r\n"
-    userInput1<-readline(s2)
+    if(interactive()){
+        s2<-"\r\n\r\nTo set new lower threshold enter value, otherwise \"n\"\r\n\r\n"
+        userInput1<-readline(s2)
+    }else{
+        userInput1<-"n"
+    }
     
     if (!is.na(as.integer(userInput1))){
         linesUnderthreshPcCells<-data[which(data$PercCells<as.double(userInput1)), ]
@@ -1054,8 +1074,12 @@ percCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         }
     }
 
-    s4<-"\r\nDiscard all wells under lower threshold? [y-n]\r\n\r\n"
-    userInput2<-readline(s4)
+    if(interactive()){
+        s4<-"\r\nDiscard all wells under lower threshold? [y-n]\r\n\r\n"
+        userInput2<-readline(s4)
+    }else{
+        userInput2<-"y"
+    }
     if (!is.na(match(userInput2, "y")) & match(userInput2, "y") == 1){
 
         data$SpotType[lineNbsUnderthreshPcCells]<-(-1)
@@ -1092,8 +1116,12 @@ percCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         print(cbind(lineNbsOverUpperthreshPcCells, linesOverUpperthreshPcCells))
     }
 
-    s7<-"\r\nTo set new upper threshold enter value, otherwise \"n\".\r\n\r\n"
-    userInput3<-readline(s7)
+    if(interactive()){
+        s7<-"\r\nTo set new upper threshold enter value, otherwise \"n\".\r\n\r\n"
+        userInput3<-readline(s7)
+    }else{
+        userInput3<-"n"
+    }
     
     if (!is.na(as.integer(userInput3))){
         linesOverUpperthreshPcCells<-data[which(data$PercCells>as.double(userInput3)), ]
@@ -1115,8 +1143,12 @@ percCellQualControl<-function(DataSetFile, nbLinesHeader, plotTitle){
         }
     }
 
-    s9<-"\r\nDiscard all wells over upper threshold? [y-n]\r\n\r\n"
-    userInput4<-readline(s9)
+    if(interactive()){
+        s9<-"\r\nDiscard all wells over upper threshold? [y-n]\r\n\r\n"
+        userInput4<-readline(s9)
+    }else{
+        userInput4<-"n"
+    }
     if (!is.na(match(userInput4, "y")) & match(userInput4, "y") == 1){
         data$SpotType[lineNbsOverUpperthreshPcCells]<-(-1)
 

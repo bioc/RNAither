@@ -33,10 +33,6 @@ data(exampleDataset, package="RNAither")
 saveDataset(header, dataset, "save_testfile1.txt")
 
 numCellQualControl("save_testfile1.txt", 3, "Histogram of the number of cells")
-n
-y
-n
-n
 }
 
 \keyword{ device }
