@@ -501,7 +501,6 @@ quantileNormalization<-function(header, dataset, listOfArgs){
 
 
 
-
 BScore <- function(header, dataset, listOfArgs){
     
     col4val<-listOfArgs[[1]]
@@ -513,6 +512,7 @@ BScore <- function(header, dataset, listOfArgs){
     minOfScreens<-min(dataset$ScreenNb)
 
     dataset[[get("col4val")]][which(dataset$SpotType == -1)]<-as.double(NA)
+    
     for (i in minOfScreens:numOfScreens){
         if (length(which(dataset$ScreenNb == i))>0){
     
@@ -569,17 +569,26 @@ BScore <- function(header, dataset, listOfArgs){
                             BscoreMat[negControlRows$RowNb[u], negControlRows$ColNb[u]]<-normedValsNegContr
                         }
                     }
-                    
+                   
                     #cou<-0
                     #for (k in seq(min(IXXj), max(IXXj), max(subsubset$ColNb))){
                     #    cou<-cou+1
                     #    subset[[get("col4val")]][k:(k+max(subsubset$ColNb)-1)]<-BscoreMat[cou, ]
                     #}
+                    
                     ####added on 15.02.2010:
-                    for (k in 1:length(c1)){
-                        subset[[get("col4val")]][k]<-BscoreMat[subsubset$RowNb,subsubset$ColNb]
-                    }
-                    ##############
+#                    for (k in 1:length(c1)){	#1 bis 384 (1 plate)
+                    	#print("BscoreMat[subsubset$RowNb,subsubset$ColNb]")
+                    	#print(BscoreMat[subsubset$RowNb,subsubset$ColNb])
+                    	
+#                        subset[[get("col4val")]][k]<-BscoreMat[subsubset$RowNb,subsubset$ColNb]
+#                    }
+
+#Change NR of what was added 15.02.2010; (08.07.2010):
+                    for (k in IXXj){                    	
+                        subset[[get("col4val")]][k]<-BscoreMat[subset$RowNb[k],subset$ColNb[k]]
+                    }                    
+#################
                 }
             }
             dataset[[get("col4val")]][IXXi]<-subset[[get("col4val")]]
