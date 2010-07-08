@@ -3089,6 +3089,10 @@ fileNameSuffix){
 #            }
 #        }
 ######### Changes Will Greenwood (22.07.2009):
+	#Change NR (08.07.2010):
+	numberOfRows<-0
+	#End change NR (08.07.2010)
+	
         for (i in minOfScreens:numOfScreens){
             if (length(which(dataset$ScreenNb == i))>0){
 	
@@ -4354,11 +4358,11 @@ controlDensity<-function(header, dataset, channel, plotTitle, showPlot, supHisto
         }
         
         histNeg<-hist(subsetNegControls[[get("channel")]], 
-        breaks = seq(floor(minxlim), ceiling(maxxlim), 
+        breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
         compuBreaks), plot = FALSE)
 
         histPos<-hist(subsetPosControls[[get("channel")]], 
-        breaks = seq(floor(minxlim), ceiling(maxxlim), 
+        breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
         compuBreaks), plot = FALSE)
     }
 
@@ -4656,11 +4660,11 @@ plotDesign, showPlot, supHisto){
                                     }
                                 
                                     histNeg<-hist(subsetNegControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
 
                                     histPos<-hist(subsetPosControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
                         
                                     par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
@@ -4736,11 +4740,11 @@ plotDesign, showPlot, supHisto){
                                     }
                                 
                                     histNeg<-hist(subsetNegControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
 
                                     histPos<-hist(subsetPosControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
                         
                                     par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
@@ -4803,11 +4807,11 @@ plotDesign, showPlot, supHisto){
                                     }
                                 
                                     histNeg<-hist(subsetNegControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
 
                                     histPos<-hist(subsetPosControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
                         
                                     par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
@@ -4868,11 +4872,11 @@ plotDesign, showPlot, supHisto){
                                     }
                                 
                                     histNeg<-hist(subsetNegControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
 
                                     histPos<-hist(subsetPosControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
                         
                                     par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
@@ -4904,11 +4908,11 @@ plotDesign, showPlot, supHisto){
                                     }
                                 
                                     histNeg<-hist(subsetNegControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
 
                                     histPos<-hist(subsetPosControls[[get("channel")]], 
-                                    breaks = seq(floor(minxlim), ceiling(maxxlim), 
+                                    breaks = seq(floor(minxlim), ceiling(maxxlim)+compuBreaks, 
                                     compuBreaks), plot = FALSE)
                         
                                     par("usr"=c(minxlim, maxxlim, 0, 4*max(c(histNeg$counts, histPos$counts))))
