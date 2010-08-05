@@ -31,7 +31,7 @@ LiWongRank<-function(header, dataset, listOfArgs){
                     Screen1<-createSubset(tempSub, tempSub$ScreenNb, j)
                     Screen2<-createSubset(tempSub, tempSub$ScreenNb, (j+1))
                     
-                    if (sum(Screen1[[get("col4anno")]]!=Screen2[[get("col4anno")]])>0 
+                    if (sum(Screen1[[get("col4anno")]]!=Screen2[[get("col4anno")]], na.rm=TRUE)>0 
                     | length(Screen1[[get("col4anno")]])!=length(Screen2[[get("col4anno")]])){
                     
                         s1<-"Plate layout of Screen"
