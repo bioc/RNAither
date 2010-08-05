@@ -64,7 +64,7 @@ LiWongRank<-function(header, dataset, listOfArgs){
         if (length(which(datasetForComputing$LabtekNb == i))>0){
         
             matRow<-length(geneList[[i]])
-            matCol<-length(unique(datasetForComputing$LabtekNb))
+            matCol<-length(unique(datasetForComputing$ScreenNb))
             
             matOfRanksForPlateTypei<-matrix(0, matRow, matCol)
             rownames(matOfRanksForPlateTypei)<-geneList[[i]]
