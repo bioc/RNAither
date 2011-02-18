@@ -10,6 +10,10 @@ importFrom("biomaRt", "useMart")
 importFrom("biomaRt", "useDataset")
 importFrom("biomaRt", "getBM")
 
+importFrom("splots", "plotScreen")
+
+importFrom("car", "qqPlot")
+
 export("createSubset",
 	"indexSubset",
 	"findReplicates",
@@ -90,5 +94,6 @@ export("createSubset",
 	"volcanoPlot",
 	"vennDiag",
 	"compareHits",
-	"mainAnalysis"
+	"mainAnalysis",
+	"rnaither"
 	)

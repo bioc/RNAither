@@ -126,7 +126,7 @@ PercCells<-rep(0, totalNumberOfSpots)
 
     }
 
-    SpotType<-factor(SpotType, levels=c(-1, 0, 1, 2))
+    # SpotType<-factor(SpotType, levels=c(-1, 0, 1, 2))
 
     dataFrame<-data.frame(Spotnumber, Internal_GeneID, GeneName, SpotType, 
     SigIntensity, SDSIntensity, Background, LabtekNb, RowNb, ColNb, ScreenNb, 

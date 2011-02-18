@@ -60,6 +60,10 @@ posNegFlag, flag4Gsea, vecOfChannels, whichOnto)
 Generates the html output files \code{ index.html} and \code{ indexnorm.html} containing the quality analysis of raw and normalized data, respectively, and \code{ stats.html}, containing the statistical analysis. If several normalization methods are applied, an \code{indexnorm} file is generated after each.
 }
 
+\note{
+\bold{This function is deprecated and kept only for backwards compatibility.} Please use the \code{ "rnaiter" } function instead.
+}
+
 \examples{
 data(exampleHeader, package="RNAither")
 data(exampleDataset, package="RNAither")

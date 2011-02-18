@@ -2,6 +2,8 @@ mainAnalysis <- function(header, dataset, flagForSameExp, listOfNormalizations,
 listOfArgs4norm, listOfStatTests, listOfArgs4stat, multTestAdj, hitScoringVec1, 
 hitScoringVec2, posNegFlag, flag4Gsea, vecOfChannels, whichOnto){
 
+    warning("The mainAnalysis() routine is deprecated. Please use rnaither() instead.")
+
     firstLine<-strsplit(header[[1]], ",")
     firstLineBis<-firstLine[[1]][2]
     secondLine<-strsplit(header[[2]], ",")
