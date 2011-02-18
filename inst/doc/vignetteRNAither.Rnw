@@ -603,8 +603,8 @@ We remark that the header is not required by the wrapper function.
 
 This is a primary screen with a small number of controls per plate and a small number of replicates 
 (two for most of the siRNAs). Given that the plates are rather large, the best adapted normalization 
-is the B-score (see~\ref{whatnormchoose}). Furthermore, to account for effects of cell counts on 
-signal intensities, a lowess normalization was performed. 
+is the z-score (see~\ref{whatnormchoose}). The screen does not contain any cellcount measurements,
+instead, random normal numbers are used as cellcounts. 
 The most suitable hit scoring method is a scoring according 
 to the normalized signal intensities (see~\ref{whichoptionstests}). We define hits as any siRNA 
 yielding a median replicate value smaller than -2 (i.e., more than twice the median absolute deviation 
@@ -613,7 +613,7 @@ away from the population median).
 The command to conduct the analysis described is the following:
 
 {\tt
-rnaither(datasetDrosophila, expname="Drosophila", excludeCellcounts="none", logtransform=FALSE, normalization="bscore", test="none", scorethresh=2.0, outdir="results", reorder=F)
+rnaither(datasetDrosophila, expname="Drosophila", excludeCellcounts="none", logtransform=FALSE, normalization="zscore", test="none", scorethresh=2.0, outdir="results", reorder=F)
 }
 
 \end{document}
