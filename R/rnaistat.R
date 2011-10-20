@@ -410,7 +410,10 @@ summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
                                ColNb=rep(NA,itssize),
                                ScreenNb=rep(1,itssize),
                                NbCells=rep(NA,itssize),
-                               pvalue=rep(NA,itssize))
+                               pvalue=rep(NA,itssize),
+                               meanscore=rep(NA,itssize),
+                               mad=rep(NA,itssize),
+                               sd=rep(NA,itssize))
   # Now fill this thing with the data!
   for (i in 1:NoOfLayouts){
     for (j in 1:NoOfWells){
@@ -423,6 +426,9 @@ summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
       newdata$GeneName[whodest] <- mydata@thedata$GeneName[ones]
       xv <- mydata@thedata$SigIntensity[whosrc]
       newdata$SigIntensity[whodest] <- median(xv,na.rm=TRUE)
+      newdata$meanscore[whodest] <- mean(xv,na.rm=TRUE)
+      newdata$mad[whodest] <- mad(xv,na.rm=TRUE)
+      newdata$sd[whodest] <- sd(xv,na.rm=TRUE)
       newdata$LabtekNb[whodest] <- i
       newdata$RowNb[whodest] <- ((j-1) %/% maxcol) + 1
       newdata$ColNb[whodest] <- ((j-1) %% maxcol) + 1
@@ -841,7 +847,7 @@ writehitlist <- function(ledata,f)
   whtml("  <HR>",h1)
   whtml(paste("  <p>Hits are marked if abs(zscore)>=",data@scorethresh," and pvalue<=",data@pvalthresh,".</p>",sep=""),h1)
   whtml("<table>",h1)
-  whtml(" <tr><th>Layout</th><th>Well</th><th>siRNA ID</th><th>Gene Name</th><th>Score</th><th>p-value</th></tr>",h1)
+  whtml(" <tr><th>Layout</th><th>Well</th><th>siRNA ID</th><th>Gene Name</th><th>Median Score</th><th>MAD Score</th><th>Mean Score</th><th>SD Score</th><th>p-value</th></tr>",h1)
   ix <- sort(fullsirna$ZScore,index.return=TRUE)$ix
   for (i in ix){
     if (!is.na(fullsirna$ZScore[i])&(!is.na(fullsirna$pvalue[i]))){
@@ -849,16 +855,22 @@ writehitlist <- function(ledata,f)
       {
          whtml(paste("<tr><td><font color=\"red\">",fullsirna$LabtekNb[i],"</font></td><td><font color=\"red\">",fullsirna$Spotnumber[i],"</font></td>",sep=""),h1)
          whtml(paste("    <td><font color=\"red\">",fullsirna$Internal_GeneID[i],"</font></td><td><font color=\"red\">",fullsirna$GeneName[i],"</font></td>",sep=""),h1)
-         whtml(paste("    <td><font color=\"red\">",fullsirna$ZScore[i],"</font></td><td><font color=\"red\">",fullsirna$pvalue[i],"</font></td></tr>",sep=""),h1)
+         whtml(paste("    <td><font color=\"red\">",fullsirna$ZScore[i],"</font></td><td><font color=\"red\">",fullsirna$mad[i],"</font></td>",sep=""),h1)
+         whtml(paste("    <td><font color=\"red\">",fullsirna$meanscore[i],"</font></td><td><font color=\"red\">",fullsirna$sd[i],"</font></td>",sep=""),h1)
+         whtml(paste("    <td><font color=\"red\">",fullsirna$pvalue[i],"</font></td></tr>",sep=""),h1)
       } else {
          whtml(paste("<tr><td>",fullsirna$LabtekNb[i],"</td><td>",fullsirna$Spotnumber[i],"</td>",sep=""),h1)
          whtml(paste("    <td>",fullsirna$Internal_GeneID[i],"</td><td>",fullsirna$GeneName[i],"</td>",sep=""),h1)
-         whtml(paste("    <td>",fullsirna$ZScore[i],"</td><td>",fullsirna$pvalue[i],"</td></tr>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$ZScore[i],"</td><td>",fullsirna$mad[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$meanscore[i],"</td><td>",fullsirna$sd[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$pvalue[i],"</td></tr>",sep=""),h1)
       }
     } else{
-       whtml(paste("<tr><td>",fullsirna$LabtekNb[i],"</td><td>",fullsirna$Spotnumber[i],"</td>",sep=""),h1)
-       whtml(paste("    <td>",fullsirna$Internal_GeneID[i],"</td><td>",fullsirna$GeneName[i],"</td>",sep=""),h1)
-       whtml(paste("    <td>",fullsirna$ZScore[i],"</td><td>",fullsirna$pvalue[i],"</td></tr>",sep=""),h1)
+         whtml(paste("<tr><td>",fullsirna$LabtekNb[i],"</td><td>",fullsirna$Spotnumber[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$Internal_GeneID[i],"</td><td>",fullsirna$GeneName[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$ZScore[i],"</td><td>",fullsirna$mad[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$meanscore[i],"</td><td>",fullsirna$sd[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",fullsirna$pvalue[i],"</td></tr>",sep=""),h1)
     }
   }
   whtml(" </table><BR/><HR>",h1)
@@ -877,11 +889,17 @@ writehitlist <- function(ledata,f)
   write.table(scoredset,file="gene_scores.txt",row.names=F,col.names=T,sep="\t",quote=F)
   genes <- unique(scoredset$GeneName)
   scores <- rep(NA,length(genes))
+  meanscore <- scores
+  madscore <- scores
+  sdscore <- scores
   pval <- rep(NA,length(genes))
   for (i in 1:length(genes)){
     xv <- scoredset$SigIntensity[scoredset$GeneName==genes[i]]
 #    scores[i] <- mean(xv,na.rm=T)
     scores[i] <- median(xv,na.rm=T)
+    meanscore[i] <- mean(xv,na.rm=T)
+    madscore[i] <- mad(xv,na.rm=T)
+    sdscore[i] <- sd(xv,na.rm=T)
     if (sum(!is.na(xv))>1){
       if (data@test=="ttest")
         pval[i] <- t.test(xv,mu=0,alternative="two.sided")$p.value
@@ -890,7 +908,7 @@ writehitlist <- function(ledata,f)
     }
   }
   wm <- (!is.na(scores))
-  hits <- data.frame(gene=genes[wm],score=scores[wm],pval=pval[wm])
+  hits <- data.frame(gene=genes[wm],score=scores[wm],mad=madscore[wm],meanscore=meanscore[wm],sd=sdscore[wm],pval=pval[wm])
   write.table(hits,file="gene_scores.txt",row.names=F,col.names=T,sep="\t",quote=F)
   ix <- sort(hits$score,index.return=TRUE)$ix
   h1 <- "gene.html"
@@ -906,22 +924,31 @@ writehitlist <- function(ledata,f)
   whtml("  <HR>",h1)
   whtml(paste("  <p>Hits are marked if abs(zscore)>=",data@scorethresh," and pvalue<=",data@pvalthresh,".</p>",sep=""),h1)
   whtml("<table>",h1)
-  whtml("  <tr><th>Gene Name</th><th>Score</th><th>p-value</th></tr>",h1)
+  whtml("  <tr><th>Gene Name</th><th>Median Score</th><th>MAD Score</th><th>Mean Score</th><th>SD Score</th><th>p-value</th></tr>",h1)
   for (i in ix){
     if (!is.na(hits$score[i])&(!is.na(hits$pval[i]))){
       if ((abs(hits$score[i])>data@scorethresh)&(hits$pval[i]<data@pvalthresh))
       {
          whtml(paste("<tr><td><font color=\"red\">",hits$gene[i],"</font></td>",sep=""),h1)
          whtml(paste("    <td><font color=\"red\">",hits$score[i],"</font></td>",sep=""),h1)
+         whtml(paste("    <td><font color=\"red\">",hits$mad[i],"</font></td>",sep=""),h1)
+         whtml(paste("    <td><font color=\"red\">",hits$meanscore[i],"</font></td>",sep=""),h1)
+         whtml(paste("    <td><font color=\"red\">",hits$sd[i],"</font></td>",sep=""),h1)
          whtml(paste("    <td><font color=\"red\">",hits$pval[i],"</font></td></tr>",sep=""),h1)
       } else {
          whtml(paste("<tr><td>",hits$gene[i],"</td>",sep=""),h1)
          whtml(paste("    <td>",hits$score[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",hits$mad[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",hits$meanscore[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",hits$sd[i],"</td>",sep=""),h1)
          whtml(paste("    <td>",hits$pval[i],"</td></tr>",sep=""),h1)
       }
     } else{
          whtml(paste("<tr><td>",hits$gene[i],"</td>",sep=""),h1)
          whtml(paste("    <td>",hits$score[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",hits$mad[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",hits$meanscore[i],"</td>",sep=""),h1)
+         whtml(paste("    <td>",hits$sd[i],"</td>",sep=""),h1)
          whtml(paste("    <td>",hits$pval[i],"</td></tr>",sep=""),h1)
     }
   }
