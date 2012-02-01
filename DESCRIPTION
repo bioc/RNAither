@@ -1,9 +1,9 @@
 Package: RNAither
 Title: Statistical analysis of high-throughput RNAi screens
-Version: 2.3.0
+Version: 2.3.1
 Author: Nora Rieber and Lars Kaderali, University of Heidelberg, Viroquant Research Group Modeling, Im Neuenheimer Feld 267, 69120 Heidelberg, Germany
 Maintainer: Nora Rieber <RNAither@gmx.de>
-Depends: R (>= 2.7.0), topGO, RankProd, prada
+Depends: R (>= 2.10), topGO, RankProd, prada
 Imports: geneplotter, limma, biomaRt, car, splots, methods
 Description: RNAither analyzes cell-based RNAi screens, and includes
 	quality assessment, customizable normalization and statistical tests, leading to lists of significant genes 
