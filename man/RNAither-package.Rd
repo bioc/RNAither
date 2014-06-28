@@ -21,5 +21,5 @@ License: \tab Artistic License 2.0\cr
 \author{
 Nora Rieber and Lars Kaderali
 
-Maintainer: Nora Rieber <Rieber Nor [at] gmx [dot] de>
+Maintainer: Lars Kaderali <lars [dot] kaderali [at] tu-dresden [dot] de>
 }
