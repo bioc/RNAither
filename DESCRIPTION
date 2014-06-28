@@ -4,7 +4,7 @@ Version: 2.13.0
 Author: Nora Rieber and Lars Kaderali, University of Heidelberg,
         Viroquant Research Group Modeling, Im Neuenheimer Feld 267,
         69120 Heidelberg, Germany
-Maintainer: Nora Rieber <RNAither@gmx.de>
+Maintainer: Lars Kaderali <lars.kaderali@tu-dresden.de>
 Depends: R (>= 2.10), topGO, RankProd, prada
 Imports: geneplotter, limma, biomaRt, car, splots, methods
 Description: RNAither analyzes cell-based RNAi screens, and includes
