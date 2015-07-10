@@ -397,7 +397,6 @@ makefullbarplot <- function(data,fn)
 # Summarize Replicates
 summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
 {
-  diffLayout <- FALSE
   itssize <- NoOfWells*NoOfLayouts
   maxcol <- max(mydata@thedata$ColNb)
   # first, create an empty RNAither data from of size NoOfLayouts x NoOfWells
@@ -416,20 +415,6 @@ summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
                                mad=rep(NA,itssize),
                                sd=rep(NA,itssize))
   # Now fill this thing with the data!
-  # Note: Function has been changed to check if layouts are same in all replicates!
-  for (i in 1:NoOfLayouts){
-    for (j in 1:NoOfWells){
-      whosrc <- which((mydata@normalizeddata$LabtekNb==i)&(mydata@normalizeddata$Spotnumber==j))
-      if (length(unique(mydata@normalizeddata$Internal_GeneID[whosrc]))>1){
-          diffLayout <- TRUE
-          warning("*** Layouts differ between replicates. This WILL result in errors. ****")
-          message("\n\n***********************************************************************")
-          message(  "\n*** Layouts differ between replicates. This WILL result in errors. ****")
-          message(  "\n***********************************************************************\n\n")
-      }
-    }
-  }
-
   for (i in 1:NoOfLayouts){
     for (j in 1:NoOfWells){
       whodest <- ((i-1)*NoOfWells)+j
@@ -1233,6 +1218,87 @@ reorderdata <- function(olddata)
   return(newdata);
 }
 
+attempt_fix <- function(itsdata)
+{
+  newdata <- itsdata
+  NoOfWells <- max(itsdata$Spotnumber)
+  NoOfRows <- max(itsdata$RowNb)
+  NoOfCols <- max(itsdata$ColNb)
+  NoOfReps <- max(itsdata$ScreenNb)
+  NoOfLayouts <- max(itsdata$LabtekNb)
+  
+  # for each layout separately, take the format of the gene ids as factor levels, sort and use this
+  # sorting further for all replicates! Just ensure that Spotnumber, row and column are subsequently
+  # corrected -> in consequence, this means the layout of the screen will be distorted, hence any
+  # spatial normalization is infeasible subsequently.
+  
+  genenames <- as.numeric(as.factor(itsdata$Internal_GeneID))
+  for (i in 1:NoOfLayouts){
+    for (j in 1:NoOfReps){
+      whois <- (itsdata$LabtekNb==i)&(itsdata$ScreenNb==j)
+      gsorted <- sort(genenames[whois],index.return=T)
+      thedata <- itsdata[whois,]
+      newdata[whois,] <- thedata[gsorted$ix,]
+    }
+  }
+  # and finally fix the Layout
+  newdata$Spotnumber <- itsdata$Spotnumber
+  newdata$RowNb <- itsdata$RowNb
+  newdata$ColNb <- itsdata$ColNb
+  return(newdata)
+}
+
+  
+  
+check_layout_consistent <- function(itsdata)
+{
+  newdata <- itsdata
+  NoOfWells <- max(itsdata$Spotnumber)
+  NoOfRows <- max(itsdata$RowNb)
+  NoOfCols <- max(itsdata$ColNb)
+  NoOfReps <- max(itsdata$ScreenNb)
+  NoOfLayouts <- max(itsdata$LabtekNb)
+  
+  # let us first check, if the layouts are identical between replicates
+  diffLayout <- FALSE
+  for (i in 1:NoOfLayouts){
+    for (j in 1:NoOfWells){
+      whosrc <- which((itsdata$LabtekNb==i)&(itsdata$Spotnumber==j))
+      if (length(unique(itsdata$Internal_GeneID[whosrc]))>1)
+        diffLayout <- TRUE
+    }
+  }
+  if (diffLayout){
+    warning("*** Layouts differ between replicates. This WILL result in errors. ****")
+    message("\n\n***********************************************************************")
+    message(  "\n*** Layouts differ between replicates. This WILL result in errors. ****")
+    message(  "\n***********************************************************************\n\n")
+    message("Attempting fix...")
+    # check further if at least the same genes are present in the different replicates...
+    # if so, we can attempt a fix...
+    fixable <- TRUE
+    for (i in 1:NoOfLayouts){
+      # for each layout test, if the layout contains the same genes, just in different order,
+      # in the different replicates
+      genes_l1 <- sort(itsdata$Internal_GeneID[(itsdata$LabtekNb==i)&(itsdata$ScreenNb==1)])
+      len1 <- length(genes_l1)
+      for (j in 2:NoOfReps){
+        genes_lr <- sort(itsdata$Internal_GeneID[((itsdata$LabtekNb==i)&(itsdata$ScreenNb==j))])
+        lenr <- length(genes_lr)
+        if (len1 != lenr)
+          fixable <- FALSE
+        else if (sum(genes_l1 == genes_lr) != len1)
+          fixable <- FALSE      
+      }
+    }
+    if (!fixable)
+      stop("\n** Error: Replica plates contain different genes. Unable to fix this. Aborting **")
+    newdata <- attempt_fix(itsdata)
+  } else message("\nLayout is identical between replicates.")
+    
+  return(newdata);
+}
+  
 #################################################################
 # rnaither -- main function to carry out analysis of screen.
 
@@ -1277,6 +1343,10 @@ rnaither <- function(data,                           # rnaither data frame conta
     mydata@thedata <- reorderdata(data)
   else
     mydata@thedata <- data
+
+  # Let us check first if the layout is the same for all plates in the different replicates!
+  mydata@thedata <- check_layout_consistent(mydata@thedata)
+  
   mydata@expname <- expname
   mydata@excludeCellcounts <- excludeCellcounts
   mydata@logtransform <- logtransform
