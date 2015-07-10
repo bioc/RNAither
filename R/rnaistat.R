@@ -397,6 +397,7 @@ makefullbarplot <- function(data,fn)
 # Summarize Replicates
 summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
 {
+  diffLayout <- FALSE
   itssize <- NoOfWells*NoOfLayouts
   maxcol <- max(mydata@thedata$ColNb)
   # first, create an empty RNAither data from of size NoOfLayouts x NoOfWells
@@ -415,6 +416,20 @@ summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
                                mad=rep(NA,itssize),
                                sd=rep(NA,itssize))
   # Now fill this thing with the data!
+  # Note: Function has been changed to check if layouts are same in all replicates!
+  for (i in 1:NoOfLayouts){
+    for (j in 1:NoOfWells){
+      whosrc <- which((mydata@normalizeddata$LabtekNb==i)&(mydata@normalizeddata$Spotnumber==j))
+      if (length(unique(mydata@normalizeddata$Internal_GeneID[whosrc]))>1){
+          diffLayout <- TRUE
+          warning("*** Layouts differ between replicates. This WILL result in errors. ****")
+          message("\n\n***********************************************************************")
+          message(  "\n*** Layouts differ between replicates. This WILL result in errors. ****")
+          message(  "\n***********************************************************************\n\n")
+      }
+    }
+  }
+
   for (i in 1:NoOfLayouts){
     for (j in 1:NoOfWells){
       whodest <- ((i-1)*NoOfWells)+j
@@ -440,7 +455,7 @@ summarizeReplicates <- function(mydata,NoOfLayouts,NoOfWells,test)
            newdata$pvalue[whodest] <- t.test(xv,mu=0,alternative="two.sided")$p.value
          else if (test=="wilcox")
            newdata$pvalue[whodest] <- wilcox.test(xv,mu=0,alternative="two.sided")$p.value
-      }
+      }  
     }
   }
   mydata@thedata <- newdata
