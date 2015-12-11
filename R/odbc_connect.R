@@ -12,8 +12,9 @@ GOannotate<-function(vecOfGeneNames, whichOnto){
         goIDs<-"go_cellular_component_id"
     }
 
-    ensembl<-useMart("ensembl")
-    ensembl<-useDataset("hsapiens_gene_ensembl", mart=ensembl)
+#    ensembl<-useMart("ensembl")
+#    ensembl<-useDataset("hsapiens_gene_ensembl", mart=ensembl)
+    ensembl <- useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl",host="www.ensembl.org")
 
 #    resTable<-getBM(attributes=c("hgnc_symbol", goIDs), filters="hgnc_symbol", 
     resTable<-getBM(attributes=c("hgnc_symbol", "go_id"), filters="hgnc_symbol", 
