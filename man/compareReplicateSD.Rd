@@ -35,7 +35,7 @@ data(exampleHeader, package="RNAither")
 data(exampleDataset, package="RNAither")
 
 compareReplicateSD(header, dataset, "Replicate standard intensity deviation", 
-"SigIntensity", "GeneName", 1)
+"SigIntensity", "GeneName", 0)
 }
 \keyword{ arith }
 \keyword{ device }
