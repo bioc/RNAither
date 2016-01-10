@@ -265,7 +265,8 @@ PlotSpatialDistrib <- function(data,exp,plt,fn,channel)
   if (length(subset)>0){
     subsubset <- subset[which(subset$LabtekNb == plt),]
     if (sum(!is.na(subsubset[[get("channel")]])) >  0){ 
-      posNegLabelVec <- rep(NA_character_, nrow(subsubset))   
+#      posNegLabelVec <- rep(NA_character_, nrow(subsubset))   
+      posNegLabelVec <- rep("", nrow(subsubset))
       posNegLabelVec[which(subsubset$SpotType == 0)] <- "N"                                            
       posNegLabelVec[which(subsubset$SpotType == 1)] <- "P"                                            
       ColNo <- max(subsubset$ColNb)                           

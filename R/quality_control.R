@@ -3844,7 +3844,8 @@ showPlot){
                 
                     if (sum(!is.na(subsubset[[get("col4plot")]])) > 0){
                 
-                        posNegLabelVec<-rep(NA_character_, nrow(subsubset))
+#                        posNegLabelVec<-rep(NA_character_, nrow(subsubset))
+			posNegLabelVec<-rep("", nrow(subsubset))
                         posNegLabelVec[which(subsubset$SpotType == 0)]<-"N"
                         posNegLabelVec[which(subsubset$SpotType == 1)]<-"P"
 
@@ -4225,7 +4226,8 @@ compareReplicateSD<-function(header, dataset, plotTitle, colname4SD, col4anno, s
         sdVec<-c(sdVec, rep(as.double(NA_character_), nbEmptyWells))
     }
 
-    posNegLabelVec<-rep(NA_character_, length(sdVec))
+#    posNegLabelVec<-rep(NA_character_, length(sdVec))
+    posNegLabelVec<-rep("", length(sdVec))
     posNegLabelVec[indexNegControls]<-"N"
     posNegLabelVec[indexPosControls]<-"P"
 
@@ -4294,7 +4296,8 @@ col4anno, showPlot){
                 sdVec<-c(sdVec, rep(as.double(NA_character_), nbEmptyWells))
             }
         
-            posNegLabelVec<-rep(NA_character_, length(sdVec))
+#            posNegLabelVec<-rep(NA_character_, length(sdVec))
+	    posNegLabelVec<-rep("", length(sdVec))
             posNegLabelVec[indexNegControls]<-"N"
             posNegLabelVec[indexPosControls]<-"P"
 
