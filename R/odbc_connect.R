@@ -14,11 +14,10 @@ GOannotate<-function(vecOfGeneNames, whichOnto){
 
 #    ensembl<-useMart("ensembl")
 #    ensembl<-useDataset("hsapiens_gene_ensembl", mart=ensembl)
-    ensembl <- useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl",host="www.ensembl.org")
+    ensembl <- useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl",host="useast.ensembl.org")
 
 #    resTable<-getBM(attributes=c("hgnc_symbol", goIDs), filters="hgnc_symbol", 
-    resTable<-getBM(attributes=c("hgnc_symbol", "go_id"), filters="hgnc_symbol", 
-    values=vecOfGeneNames, mart=ensembl)
+    resTable<-try(getBM(attributes=c("hgnc_symbol", "go_id"), filters="hgnc_symbol", values=vecOfGeneNames, mart=ensembl))
 
     GOlist<-list("platzhalter")
     newVecOfGeneNames<-list("platzhalter")
