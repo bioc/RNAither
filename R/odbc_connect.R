@@ -23,18 +23,23 @@ GOannotate<-function(vecOfGeneNames, whichOnto){
     newVecOfGeneNames<-list("platzhalter")
     counter<-0
     
-    for (gene in vecOfGeneNames){
-    
-        if (nrow(resTable[resTable[, 1] == gene,]) > 0){
-        
-            subSet<-resTable[resTable[, 1] == gene, ]
-            GoVec<-subSet[, 2]
-            GOterms<-GoVec[GoVec!=""]
-        
-            if (!is.na(GOterms[1])){
-                counter<-counter+1
-	        GOlist[[counter]]<-GOterms
-                newVecOfGeneNames[[counter]]<-gene
+    if (class(resTable)=="try-error")
+      invisible(resTable)
+    else
+    {
+        for (gene in vecOfGeneNames)
+        {
+            if (nrow(resTable[resTable[, 1] == gene,]) > 0)
+            {
+                subSet<-resTable[resTable[, 1] == gene, ]
+                GoVec<-subSet[, 2]
+                GOterms<-GoVec[GoVec!=""]
+                if (!is.na(GOterms[1]))
+                {
+                    counter<-counter+1
+	                  GOlist[[counter]]<-GOterms
+                    newVecOfGeneNames[[counter]]<-gene
+                }
             }
         }
     }
