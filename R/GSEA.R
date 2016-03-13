@@ -3,8 +3,8 @@ gseaAnalysis<-function(hitVector, whichOnto){
     hitVector<-factor(hitVector)
     
     GOlist<-GOannotate(names(hitVector), whichOnto)
-    if (class(resTable)=="try-error")
-	invisible(resTable)
+    if (class(GOlist)=="try-error")
+	invisible(GOlist)
 
 
 
