@@ -23,10 +23,9 @@ GOannotate<-function(vecOfGeneNames, whichOnto){
     newVecOfGeneNames<-list("platzhalter")
     counter<-0
     
-    if (class(resTable)=="try-error")
+    if (class(resTable)=="try-error"){
       invisible(resTable)
-    else
-    {
+    }else{
         for (gene in vecOfGeneNames)
         {
             if (nrow(resTable[resTable[, 1] == gene,]) > 0)
@@ -42,9 +41,9 @@ GOannotate<-function(vecOfGeneNames, whichOnto){
                 }
             }
         }
+      names(GOlist)<-unlist(newVecOfGeneNames)
+      invisible(GOlist)
     }
-    names(GOlist)<-unlist(newVecOfGeneNames)
-    invisible(GOlist)
 }
 
 
