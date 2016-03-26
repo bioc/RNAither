@@ -15,16 +15,19 @@ gseaAnalysis<-function(hitVector, whichOnto){
       if(whichOnto == "cellular_component"){
           whichOnto<-"CC"    
       }
-    
-      GOdata<-new("topGOdata", ontology=whichOnto, allGenes=hitVector, 
-      annot=geneNameAnno, gene2GO=GOlist)
+      l <- NA
+      try({
+        GOdata<-new("topGOdata", ontology=whichOnto, allGenes=hitVector, 
+        annot=geneNameAnno, gene2GO=GOlist)
 
-      testStat<-new("weightCount", testStatistic=GOFisherTest, name="Fisher test", 
-      sigRatio="ratio")
-      resultWeight<-getSigGroups(GOdata, testStat)
+        testStat<-new("weightCount", testStatistic=GOFisherTest, name="Fisher test", 
+        sigRatio="ratio")
+        resultWeight<-getSigGroups(GOdata, testStat)
 
-      l <- GenTable(GOdata, resultWeight, topNodes=length(usedGO(GOdata)))
+        l <- GenTable(GOdata, resultWeight, topNodes=length(usedGO(GOdata)))
+      })
     }
+    return(l);
 }
 
 

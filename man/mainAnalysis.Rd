@@ -71,7 +71,7 @@ data(exampleDataset, package="RNAither")
 mainAnalysis(header, dataset, 0, list(controlNorm), list(list(1, 0, "SigIntensity", 1)), 
 list(Ttest, MannWhitney), list(list("l", 1, "SigIntensity", "GeneName"), 
 list("l", 1, "SigIntensity", "GeneName")), "none", c(1, 0, 0), c(0.05, 0, 0), 1, 
-1, c("SigIntensity", "NbCells"), "biological_process")
+0, c("SigIntensity", "NbCells"), "biological_process")
 
 }
 
