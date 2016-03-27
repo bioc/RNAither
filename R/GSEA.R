@@ -1,7 +1,7 @@
 gseaAnalysis<-function(hitVector, whichOnto){
 
     hitVector<-factor(hitVector)
-    
+    l <- 0
     GOlist<-GOannotate(names(hitVector), whichOnto)
     if (class(GOlist)=="try-error"){
 	    invisible(GOlist)
@@ -15,7 +15,6 @@ gseaAnalysis<-function(hitVector, whichOnto){
       if(whichOnto == "cellular_component"){
           whichOnto<-"CC"    
       }
-      l <- NA
       try({
         GOdata<-new("topGOdata", ontology=whichOnto, allGenes=hitVector, 
         annot=geneNameAnno, gene2GO=GOlist)
@@ -27,7 +26,7 @@ gseaAnalysis<-function(hitVector, whichOnto){
         l <- GenTable(GOdata, resultWeight, topNodes=length(usedGO(GOdata)))
       })
     }
-    return(l);
+    return(l)
 }
 
 
