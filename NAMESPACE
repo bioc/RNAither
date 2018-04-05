@@ -14,6 +14,16 @@ importFrom("splots", "plotScreen")
 
 importFrom("car", "qqPlot")
 
+importFrom("grDevices", "dev.off", "jpeg", "pdf", "png", "x11")
+importFrom("graphics", "abline", "axis", "boxplot", "hist", "identify",
+           "legend", "mtext", "par", "plot.new", "points", "text")
+importFrom("methods", "new")
+importFrom("stats", "cor", "density", "lowess", "mad", "median",
+           "medpolish", "p.adjust", "qqline", "qqnorm", "quantile",
+           "sd", "t.test", "var", "wilcox.test")
+importFrom("utils", "read.table", "write.table")
+
+
 export("createSubset",
 	"indexSubset",
 	"findReplicates",

@@ -79,8 +79,10 @@ plotqq <- function(thedata,pos,neg,title,xl,fname){
     thecol <- rep("black",length(thedata))
     thecol[pos] <- "green"
     thecol[neg] <- "red"
-    ix <- sort(thedata,index.return=T)$ix
-    qqPlot(thedata,ylab=xl,main=title,col=thecol[ix])
+    isvalid <- (!is.na(thedata))&(abs(thedata)!=Inf)
+    itsdata <- thedata[isvalid]
+    ix <- sort(itsdata,index.return=T)$ix
+    qqPlot(itsdata,ylab=xl,main=title,col=thecol[ix])
   }
   dev.off()
 }
