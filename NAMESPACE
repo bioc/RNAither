@@ -5,15 +5,11 @@ importFrom("limma", "normalizeBetweenArrays")
 importFrom("limma", "vennCounts")
 importFrom("limma", "vennDiagram")
 importFrom("geneplotter", "imageMap")
-
 importFrom("biomaRt", "useMart")
 importFrom("biomaRt", "useDataset")
 importFrom("biomaRt", "getBM")
-
 importFrom("splots", "plotScreen")
-
 importFrom("car", "qqPlot")
-
 importFrom("grDevices", "dev.off", "jpeg", "pdf", "png", "x11")
 importFrom("graphics", "abline", "axis", "boxplot", "hist", "identify",
            "legend", "mtext", "par", "plot.new", "points", "text")

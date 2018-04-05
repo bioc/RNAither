@@ -79,7 +79,7 @@ plotqq <- function(thedata,pos,neg,title,xl,fname){
     thecol <- rep("black",length(thedata))
     thecol[pos] <- "green"
     thecol[neg] <- "red"
-    isvalid <- (!is.na(thedata))&(abs(thedata)!=Inf)
+    isvalid <- (!is.na(thedata))&(abs(thedata)!=Inf) # exclude Inf and NA values...
     itsdata <- thedata[isvalid]
     ix <- sort(itsdata,index.return=T)$ix
     qqPlot(itsdata,ylab=xl,main=title,col=thecol[ix])
