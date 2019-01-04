@@ -1,6 +1,6 @@
 Package: RNAither
 Title: Statistical analysis of high-throughput RNAi screens
-Version: 2.30.0
+Version: 2.30.1
 Author: Nora Rieber and Lars Kaderali, University of Heidelberg,
         Viroquant Research Group Modeling, Im Neuenheimer Feld 267,
         69120 Heidelberg, Germany
@@ -12,5 +12,5 @@ Description: RNAither analyzes cell-based RNAi screens, and includes
         tests, leading to lists of significant genes and biological
         processes.
 License: Artistic-2.0
-biocViews: CellBasedAssays, QualityControl, Preprocessing,
+biocViews: ImmunoOncology, CellBasedAssays, QualityControl, Preprocessing,
         Visualization, Annotation, GO
